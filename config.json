@@ -1,14 +1,22 @@
 {
   "facebook_channels": [
-    "https://www.youtube.com/@channel1",
-    "https://www.youtube.com/@channel2",
-    "https://www.youtube.com/@channel3"
+    "https://youtube.com/@admdindiancriminalminds-z6t?si=5EyDS3Gd8opVYIc6",
+    "https://youtube.com/@crimealert_4k?si=jzYpfc5CImZaPrp5",
+    "https://youtube.com/@alert100hindiwebseries?si=MC0GZDeFgiqIKnJ4"
   ],
   "youtube_channels": [
-    "https://www.youtube.com/@channel4",
-    "https://www.youtube.com/@channel5",
-    "https://www.youtube.com/@channel6"
+    "https://youtube.com/@apradhkijaanch?si=EAaMqkCubkv0xTMY",
+    "https://youtube.com/@crimealert?si=Hd8NCSKqZ7m5d1AH",
+    "https://youtube.com/@crimealertbharat-u5w?si=blL11bAfpZ_RbTFm"
   ],
-  "fb_upload_times_utc": ["06:00", "11:00", "15:00"],
-  "yt_upload_times_utc": ["04:00", "08:00", "14:00"]
+  "fb_upload_times_utc": [
+    "06:00",
+    "11:00",
+    "15:00"
+  ],
+  "yt_upload_times_utc": [
+    "04:00",
+    "08:00",
+    "14:00"
+  ]
 }
