@@ -1,0 +1,14 @@
+{
+  "facebook_channels": [
+    "https://www.youtube.com/@channel1",
+    "https://www.youtube.com/@channel2",
+    "https://www.youtube.com/@channel3"
+  ],
+  "youtube_channels": [
+    "https://www.youtube.com/@channel4",
+    "https://www.youtube.com/@channel5",
+    "https://www.youtube.com/@channel6"
+  ],
+  "fb_upload_times_utc": ["06:00", "11:00", "15:00"],
+  "yt_upload_times_utc": ["04:00", "08:00", "14:00"]
+}
