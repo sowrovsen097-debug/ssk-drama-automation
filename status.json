@@ -1,0 +1,11 @@
+{
+  "updated_at": "",
+  "stage": "setup",
+  "message": "সিস্টেম ইনস্টল হয়েছে, প্রথম রান এখনো হয়নি।",
+  "pending": { "fb": 0, "yt": 0 },
+  "pending_list": [],
+  "last_edit": null,
+  "last_upload": null,
+  "analytics": null,
+  "bot_last_run": ""
+}
