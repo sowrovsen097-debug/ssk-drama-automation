@@ -1,0 +1,56 @@
+name: 2) SSK Timed Upload + Cleanup
+on:
+  schedule:
+    - cron: '0 * * * *'      # প্রতি ঘণ্টায় চেক; ভেতরে তোমার টাইম মিললে আপলোড
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'auto / fb / yt'
+        required: false
+        default: 'auto'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssk-upload
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: FFmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Dependencies
+        run: python -m pip install --upgrade pip -q && pip install -q -r requirements.txt
+      - name: Run Upload Pipeline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MANUAL_PLATFORM: ${{ github.event.inputs.platform }}
+        run: python main.py upload
+      - name: State Commit & Push
+        if: always()
+        run: |
+          git config --global user.name  'ssk-bot'
+          git config --global user.email 'ssk-bot@users.noreply.github.com'
+          git add -A history.json state.json status.json config.json chat.json telegram_offset.json 2>/dev/null || true
+          git diff --cached --quiet && echo "no change" && exit 0
+          git commit -m "chore: upload state $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase --autostash origin ${GITHUB_REF_NAME} || true
+          git push origin HEAD:${GITHUB_REF_NAME} || (git pull --rebase --autostash origin ${GITHUB_REF_NAME} && git push)
