@@ -1,0 +1,64 @@
+{
+  "facebook_channels": [
+    "https://youtube.com/@admdindiancriminalminds-z6t",
+    "https://youtube.com/@crimealert_4k",
+    "https://youtube.com/@crimealert"
+  ],
+  "youtube_channels": [
+    "https://youtube.com/@apradhkijaanch",
+    "https://youtube.com/@crimealertbharat-u5w",
+    "https://youtube.com/@alert100hindiwebseries"
+  ],
+  "fb_upload_times_bd": ["10:00", "15:00", "20:00"],
+  "yt_upload_times_bd": ["08:00", "15:00", "22:00"],
+  "edit_window_bd": ["01:00", "06:00"],
+
+  "min_age_days": 60,
+  "max_age_days": 0,
+  "target_min_minutes": 30,
+  "target_max_minutes": 35,
+  "videos_per_slot": 1,
+
+  "whisper_model": "small",
+  "whisper_engine": "auto",
+  "whisper_language": "",
+
+  "scene_sample_seconds": 0.5,
+  "scene_threshold": 0.32,
+  "max_segments": 90,
+
+  "features": {
+    "subtitles": true,
+    "music": true,
+    "music_volume": 0.1,
+    "color_grade": true,
+    "zoom_pan": false,
+    "denoise": true,
+    "loudnorm": true,
+    "pitch_touch": true,
+    "silence_trim": true,
+    "scene_cut": true,
+    "hook_extraction": false,
+    "brand_overlay": true,
+    "mirror_frame": false
+  },
+
+  "music_queries": ["cinematic tension", "dark documentary", "suspense ambient"],
+  "seo_language": "bn",
+  "yt_privacy": "public",
+  "fb_published": true,
+  "yt_category_id": "24",
+  "brand": { "name": "SSK DRAMA", "banner_color": "0xFFFFFF" },
+
+  "telegram_update_minutes": 30,
+  "status_commit_minutes": 5,
+  "dashboard_status_minutes": 5,
+
+  "gemini_models": [
+    "gemini-3-flash",
+    "gemini-3.1-flash",
+    "gemini-2.5-flash",
+    "gemini-flash-latest",
+    "gemini-2.0-flash"
+  ]
+}
