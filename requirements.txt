@@ -1,0 +1,10 @@
+yt-dlp
+requests
+requests-toolbelt
+pytz
+numpy
+opencv-python-headless
+faster-whisper
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
