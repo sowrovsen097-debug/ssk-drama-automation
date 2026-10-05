@@ -64,7 +64,7 @@
   },
   "telegram_update_minutes": 30,
   "status_commit_minutes": 5,
-  "dashboard_status_minutes": 1,
+  "dashboard_status_minutes": 5,
   "gemini_models": [
     "gemini-3-flash",
     "gemini-3.1-flash",
