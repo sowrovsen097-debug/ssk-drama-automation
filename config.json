@@ -45,7 +45,7 @@
     "pitch_touch": true,
     "silence_trim": true,
     "scene_cut": true,
-    "hook_extraction": false,
+    "hook_extraction": true,
     "brand_overlay": true,
     "mirror_frame": false
   },
