@@ -1,1 +1,10 @@
-{}
+{
+  "2026-10-07-facebook-0": {
+    "date": "2026-10-07",
+    "platform": "facebook",
+    "slot": 0,
+    "state": "failed",
+    "error": "No unused eligible video found within the scan limit",
+    "updated_at": "2026-10-07T04:57:41.307634+06:00"
+  }
+}
