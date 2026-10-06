@@ -1,20 +1,8 @@
 {
-  "updated_at": "2026-10-06T00:45:30Z",
+  "updated_at": "2026-10-06T00:50:32Z",
   "stage": {
     "stage": "idle",
-    "bot_last_run": "2026-10-06T00:45:30Z",
-    "analytics": {
-      "youtube": {
-        "range_days": 7,
-        "views": null,
-        "minutes": null,
-        "countries": [],
-        "error": "('invalid_client: The OAuth client was not found.', {'error': 'invalid_client', 'error_description': 'The OAuth client was not found.'})"
-      },
-      "facebook": null,
-      "at": "2026-10-06T00:45:30Z"
-    },
-    "status_committed_at": "2026-10-06T00:45:30Z"
+    "message": "আজকের সব এডিট কাজ শেষ।"
   },
   "message": "সিস্টেম ইনস্টল হয়েছে, প্রথম রান এখনো হয়নি।",
   "pending": {
