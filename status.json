@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-10-06T08:18:13.244109+06:00",
+  "updated_at": "2026-10-06T08:31:50.526396+06:00",
   "counts": {},
   "progress": {},
   "jobs": [],
   "metrics": {
-    "checked_at": "2026-10-06T08:18:13.431544+06:00",
+    "checked_at": "2026-10-06T08:31:50.620526+06:00",
     "videos": [],
     "youtube_countries": null,
     "facebook_countries": null,
     "warnings": []
   },
   "errors": [],
-  "paused": true
+  "paused": false
 }
