@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """SSK DRAMA — GitHub Release কে স্টোরেজ হিসেবে ব্যবহার + status + অটো কমিট"""
 import base64, json, os, subprocess, time
+from datetime import datetime, timezone
 import requests
 
 API = "https://api.github.com"
@@ -20,17 +21,22 @@ def owner_repo():
     return "", ""
 
 
-def _headers():
-    return {"Authorization": f"Bearer {token()}",
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28"}
+def _headers(is_upload=False):
+    h = {
+        "Authorization": f"Bearer {token()}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+    if is_upload:
+        h["Content-Type"] = "application/octet-stream"
+    return h
 
 
-def api(method, url, retries=4, timeout=180, **kw):
+def api(method, url, retries=4, timeout=180, is_upload=False, **kw):
     last = None
     for i in range(retries):
         try:
-            r = requests.request(method, url, headers=_headers(),
+            r = requests.request(method, url, headers=_headers(is_upload),
                                  timeout=timeout, **kw)
             if r.status_code in (200, 201, 204):
                 return r
@@ -59,6 +65,39 @@ def save_json(path, obj):
 
 def keyword():
     return "ssk"
+
+
+# ---------------- status updater ----------------
+def update_status(stage=None, message=None, pending=None, last_edit=None, last_upload=None, analytics=None):
+    status_file = "status.json"
+    data = load_json(status_file, {
+        "updated_at": "",
+        "stage": "idle",
+        "message": "",
+        "pending": {"fb": 0, "yt": 0},
+        "pending_list": [],
+        "last_edit": None,
+        "last_upload": None,
+        "analytics": {}
+    })
+    
+    data["updated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    if stage is not None:
+        data["stage"] = stage
+    if message is not None:
+        data["message"] = message
+    if pending is not None:
+        data["pending"] = pending
+    if last_edit is not None:
+        data["last_edit"] = last_edit
+    if last_upload is not None:
+        data["last_upload"] = last_upload
+    if analytics is not None:
+        data["analytics"] = analytics
+
+    save_json(status_file, data)
+    return data
 
 
 # ---------------- release storage ----------------
@@ -92,8 +131,6 @@ def upload_asset(local_path, asset_name):
     with open(local_path, "rb") as fp:
         res = api("POST",
                   f"{UPLOADS}/repos/{o}/{r}/releases/{rid}/assets?name={asset_name}",
-                  data=fp, headers_extra=True,
-                  timeout=1800,
-                  # header override
-                  )
+                  data=fp, is_upload=True,
+                  timeout=1800)
     return res.json() if res.status_code in (200, 201) else None
