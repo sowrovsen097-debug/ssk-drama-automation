@@ -1,10 +1,70 @@
 {
-  "updated_at": "2026-10-07T02:41:34.741213+06:00",
-  "counts": {},
-  "progress": {},
-  "jobs": [],
+  "updated_at": "2026-10-07T05:59:50.729562+06:00",
+  "counts": {
+    "failed": 6
+  },
+  "progress": {
+    "updated_at": "2026-10-07T05:14:40.614934+06:00",
+    "stage": "night preparation finished"
+  },
+  "jobs": [
+    {
+      "date": "2026-10-07",
+      "platform": "youtube",
+      "slot": 2,
+      "state": "failed",
+      "error": "No unused eligible video found within the scan limit",
+      "updated_at": "2026-10-07T05:14:38.800418+06:00",
+      "key": "2026-10-07-youtube-2"
+    },
+    {
+      "date": "2026-10-07",
+      "platform": "youtube",
+      "slot": 1,
+      "state": "failed",
+      "error": "No unused eligible video found within the scan limit",
+      "updated_at": "2026-10-07T05:11:26.204675+06:00",
+      "key": "2026-10-07-youtube-1"
+    },
+    {
+      "date": "2026-10-07",
+      "platform": "youtube",
+      "slot": 0,
+      "state": "failed",
+      "error": "No unused eligible video found within the scan limit",
+      "updated_at": "2026-10-07T05:08:08.065372+06:00",
+      "key": "2026-10-07-youtube-0"
+    },
+    {
+      "date": "2026-10-07",
+      "platform": "facebook",
+      "slot": 2,
+      "state": "failed",
+      "error": "No unused eligible video found within the scan limit",
+      "updated_at": "2026-10-07T05:04:37.176344+06:00",
+      "key": "2026-10-07-facebook-2"
+    },
+    {
+      "date": "2026-10-07",
+      "platform": "facebook",
+      "slot": 1,
+      "state": "failed",
+      "error": "No unused eligible video found within the scan limit",
+      "updated_at": "2026-10-07T05:01:11.762131+06:00",
+      "key": "2026-10-07-facebook-1"
+    },
+    {
+      "date": "2026-10-07",
+      "platform": "facebook",
+      "slot": 0,
+      "state": "failed",
+      "error": "No unused eligible video found within the scan limit",
+      "updated_at": "2026-10-07T04:57:41.307634+06:00",
+      "key": "2026-10-07-facebook-0"
+    }
+  ],
   "metrics": {
-    "checked_at": "2026-10-07T02:41:34.902031+06:00",
+    "checked_at": "2026-10-07T05:59:50.881469+06:00",
     "videos": [],
     "youtube_countries": null,
     "facebook_countries": null,
