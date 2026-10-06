@@ -1,0 +1,7 @@
+requests
+yt-dlp[default]
+openai-whisper
+opencv-python-headless
+google-api-python-client
+google-auth
+setuptools
