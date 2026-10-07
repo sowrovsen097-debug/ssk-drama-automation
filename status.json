@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-07T11:29:09.459181+06:00",
+  "updated_at": "2026-10-07T12:44:25.966037+06:00",
   "counts": {
     "failed": 6
   },
@@ -64,7 +64,7 @@
     }
   ],
   "metrics": {
-    "checked_at": "2026-10-07T11:29:09.638192+06:00",
+    "checked_at": "2026-10-07T12:44:26.150762+06:00",
     "videos": [],
     "youtube_countries": null,
     "facebook_countries": null,
