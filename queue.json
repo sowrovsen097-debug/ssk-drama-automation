@@ -62,5 +62,13 @@
     "state": "failed",
     "error": "No unused eligible video found within the scan limit",
     "updated_at": "2026-10-08T05:33:50.877593+06:00"
+  },
+  "2026-10-08-facebook-2": {
+    "date": "2026-10-08",
+    "platform": "facebook",
+    "slot": 2,
+    "state": "failed",
+    "error": "No unused eligible video found within the scan limit",
+    "updated_at": "2026-10-08T05:36:56.313510+06:00"
   }
 }
