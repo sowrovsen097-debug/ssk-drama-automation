@@ -78,5 +78,13 @@
     "state": "failed",
     "error": "No unused eligible video found within the scan limit",
     "updated_at": "2026-10-08T05:39:58.075781+06:00"
+  },
+  "2026-10-08-youtube-1": {
+    "date": "2026-10-08",
+    "platform": "youtube",
+    "slot": 1,
+    "state": "failed",
+    "error": "No unused eligible video found within the scan limit",
+    "updated_at": "2026-10-08T05:43:11.252037+06:00"
   }
 }
