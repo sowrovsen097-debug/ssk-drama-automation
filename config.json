@@ -36,7 +36,7 @@
   "whisper_model": "base",
   "gemini_model": "gemini-3.1-flash-lite",
   "facebook_graph_version": "v26.0",
-  "telegram_updates_enabled": false,
+  "telegram_updates_enabled": true,
   "drive_buffer_folder": "SSK DRAMA BUFFER",
   "storage_retention_days": 3,
   "size_cap_mb": {
