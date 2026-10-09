@@ -10,10 +10,25 @@
     "https://youtube.com/@crimealertbharat-u5w",
     "https://youtube.com/@alert100hindiwebseries"
   ],
-  "facebook_times_bd": ["10:00", "15:00", "20:00"],
-  "youtube_times_bd": ["08:00", "15:00", "22:00"],
+  "facebook_times_bd": [
+    "10:00",
+    "15:00",
+    "20:00"
+  ],
+  "youtube_times_bd": [
+    "08:00",
+    "15:00",
+    "22:00"
+  ],
   "day_filter": 60,
-  "day_filter_options": [1, 6, 8, 30, 60, 90],
+  "day_filter_options": [
+    1,
+    6,
+    8,
+    30,
+    60,
+    90
+  ],
   "max_duration_minutes": 80,
   "min_duration_seconds": 60,
   "keep_ratio": 0.8125,
@@ -24,7 +39,10 @@
   "telegram_updates_enabled": false,
   "drive_buffer_folder": "SSK DRAMA BUFFER",
   "storage_retention_days": 3,
-  "size_cap_mb": {"youtube": 1800, "facebook": 950},
+  "size_cap_mb": {
+    "youtube": 1800,
+    "facebook": 950
+  },
   "music_enabled": true,
   "music_query": "cinematic ambient instrumental",
   "ai_scene_review": true,
@@ -56,7 +74,13 @@
     "watermark": true
   },
   "publish": {
-    "youtube": {"categoryId": "24", "privacyStatus": "public", "madeForKids": false},
-    "facebook": {"published": true}
+    "youtube": {
+      "categoryId": "24",
+      "privacyStatus": "public",
+      "madeForKids": false
+    },
+    "facebook": {
+      "published": true
+    }
   }
 }
