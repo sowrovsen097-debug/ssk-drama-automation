@@ -29,6 +29,12 @@
       "text": "Hi",
       "answered": false,
       "t": "10/10/2026, 15:28:14"
+    },
+    {
+      "role": "user",
+      "text": "SSK DRAMA STATUS",
+      "answered": false,
+      "t": "10/10/2026, 15:28:21"
     }
   ]
 }
