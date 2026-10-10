@@ -33,10 +33,10 @@
     "error": "CoreError: facebook slot 3: ব্যবহারযোগ্য ভিডিও পাওয়া যায়নি — বয়স ফিল্টার যেকোনো দিন, ক্যাপ 80 মিনিট। কারণ: কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহার করা 0।"
   },
   "youtube-1": {
-    "state": "failed",
-    "attempt": 4,
+    "state": "preparing",
+    "attempt": 5,
     "key": "youtube-1",
-    "updated_at": "2026-10-10 07:38:11",
+    "updated_at": "2026-10-10 07:50:09",
     "created_at": "2026-10-10 06:23:41",
     "platform": "youtube",
     "slot": 1,
