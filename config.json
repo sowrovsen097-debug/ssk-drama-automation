@@ -21,8 +21,8 @@
     "10:00"
   ],
   "edit_window_bst": [
-    "03:00pm",
-    "08:00pm"
+    "01:00",
+    "06:00"
   ],
   "min_edit_lead_hours": 6,
   "min_age_days": 20,
