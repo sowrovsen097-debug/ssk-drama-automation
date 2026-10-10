@@ -33,13 +33,14 @@
     "error": "CoreError: facebook slot 3: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
   },
   "youtube-1": {
-    "state": "downloading",
+    "state": "failed",
     "attempt": 1,
     "key": "youtube-1",
-    "updated_at": "2026-10-10 06:23:42",
+    "updated_at": "2026-10-10 06:23:55",
     "created_at": "2026-10-10 06:23:41",
     "platform": "youtube",
     "slot": 1,
-    "upload_time": "08:00"
+    "upload_time": "08:00",
+    "error": "CoreError: youtube slot 1: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
   }
 }
