@@ -51,7 +51,7 @@
   "pitch_ratio": 1.022,
   "foreground_height_ratio": 0.8125,
   "metadata_probe_limit": 15,
-  "allow_any_age": false,
+  "allow_any_age": true,
   "trim_long_sources": true,
   "edits": {
     "aspect_fit": true,
