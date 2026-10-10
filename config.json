@@ -10,21 +10,43 @@
     "https://youtube.com/@crimealertbharat-u5w",
     "https://youtube.com/@alert100hindiwebseries"
   ],
-  "fb_upload_times_bst": ["10:00", "15:00", "20:00"],
-  "yt_upload_times_bst": ["08:00", "15:00", "22:00"],
-  "edit_window_bst": ["01:00", "06:00"],
+  "fb_upload_times_bst": [
+    "10:00",
+    "15:00",
+    "20:00"
+  ],
+  "yt_upload_times_bst": [
+    "08:00",
+    "15:00",
+    "22:00"
+  ],
+  "edit_window_bst": [
+    "3:00pm",
+    "08:00pm"
+  ],
   "min_edit_lead_hours": 6,
-  "min_age_days": 60,
+  "min_age_days": 20,
   "max_duration_min": 80,
   "keep_ratio": 0.8125,
-  "yt_width": 1920, "yt_height": 1080,
-  "fb_width": 1080, "fb_height": 1080,
+  "yt_width": 1920,
+  "yt_height": 1080,
+  "fb_width": 1080,
+  "fb_height": 1080,
   "mirror_facebook": true,
-  "subtitles": true, "subtitle_colorful": true,
-  "bg_music": true, "music_volume": 0.12, "whoosh": true,
-  "whisper_model": "base", "whisper_language": "auto",
-  "quality_crf": 23, "quality_preset": "veryfast", "max_output_mb": 1700,
-  "privacy_status": "public", "category_id": "24",
-  "notify_interval_min": 5, "brand_name": "SSK DRAMA",
-  "progress_bar": true, "dry_run": false
+  "subtitles": true,
+  "subtitle_colorful": true,
+  "bg_music": true,
+  "music_volume": 0.12,
+  "whoosh": true,
+  "whisper_model": "base",
+  "whisper_language": "auto",
+  "quality_crf": 23,
+  "quality_preset": "veryfast",
+  "max_output_mb": 1700,
+  "privacy_status": "public",
+  "category_id": "24",
+  "notify_interval_min": 5,
+  "brand_name": "SSK DRAMA",
+  "progress_bar": true,
+  "dry_run": false
 }
