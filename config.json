@@ -20,7 +20,7 @@
     "15:00",
     "22:00"
   ],
-  "day_filter": 60,
+  "day_filter": 8,
   "day_filter_options": [
     1,
     6,
