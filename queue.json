@@ -1,2 +1,9 @@
 {
+  "facebook-1": {
+    "state": "preparing",
+    "attempt": 1,
+    "key": "facebook-1",
+    "updated_at": "2026-10-10 06:22:42",
+    "created_at": "2026-10-10 06:22:42"
+  }
 }
