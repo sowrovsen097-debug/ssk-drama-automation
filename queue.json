@@ -64,5 +64,20 @@
     "slot": 3,
     "upload_time": "22:00",
     "error": "CoreError: youtube slot 3: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
+  },
+  "progress": {
+    "stage": "night preparation finished",
+    "done": [],
+    "failed": [
+      "facebook-1",
+      "facebook-2",
+      "facebook-3",
+      "youtube-1",
+      "youtube-2",
+      "youtube-3"
+    ],
+    "key": "progress",
+    "updated_at": "2026-10-10 06:24:27",
+    "created_at": "2026-10-10 06:24:27"
   }
 }
