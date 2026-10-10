@@ -11,10 +11,13 @@
     "error": "CoreError: facebook slot 1: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
   },
   "facebook-2": {
-    "state": "preparing",
+    "state": "downloading",
     "attempt": 1,
     "key": "facebook-2",
-    "updated_at": "2026-10-10 06:23:04",
-    "created_at": "2026-10-10 06:23:04"
+    "updated_at": "2026-10-10 06:23:06",
+    "created_at": "2026-10-10 06:23:04",
+    "platform": "facebook",
+    "slot": 2,
+    "upload_time": "15:00"
   }
 }
