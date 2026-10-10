@@ -1,12 +1,13 @@
 {
   "facebook-1": {
-    "state": "downloading",
+    "state": "failed",
     "attempt": 1,
     "key": "facebook-1",
-    "updated_at": "2026-10-10 06:22:44",
+    "updated_at": "2026-10-10 06:22:57",
     "created_at": "2026-10-10 06:22:42",
     "platform": "facebook",
     "slot": 1,
-    "upload_time": "10:00"
+    "upload_time": "10:00",
+    "error": "CoreError: facebook slot 1: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
   }
 }
