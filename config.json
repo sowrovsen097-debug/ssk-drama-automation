@@ -1,4 +1,65 @@
+{
+  "paused": false,
+  "facebook_channels": [
+    "https://youtube.com/@admdindiancriminalminds-z6t",
+    "https://youtube.com/@crimealert_4k",
+    "https://youtube.com/@crimealert"
+  ],
+  "youtube_channels": [
+    "https://youtube.com/@apradhkijaanch",
+    "https://youtube.com/@crimealertbharat-u5w",
+    "https://youtube.com/@alert100hindiwebseries"
+  ],
+  "facebook_times_bd": ["10:00", "15:00", "20:00"],
+  "youtube_times_bd": ["08:00", "15:00", "22:00"],
+  "day_filter": 60,
+  "day_filter_options": [1, 6, 8, 30, 60, 90],
+  "max_duration_minutes": 80,
+  "min_duration_seconds": 60,
+  "keep_ratio": 0.8125,
+  "source_scan_limit": 200,
+  "whisper_model": "base",
+  "gemini_model": "gemini-3.1-flash-lite",
+  "facebook_graph_version": "v26.0",
+  "telegram_updates_enabled": true,
+  "drive_buffer_folder": "SSK DRAMA BUFFER",
+  "storage_retention_days": 3,
+  "size_cap_mb": {"youtube": 1800, "facebook": 950},
+  "music_enabled": true,
+  "music_query": "cinematic ambient instrumental",
+  "ai_scene_review": true,
+  "ai_scene_frames": 6,
+  "micro_speed": 1.03,
+  "pitch_ratio": 1.022,
+  "foreground_height_ratio": 0.8125,
   "metadata_probe_limit": 15,
   "allow_any_age": false,
   "trim_long_sources": false,
-  "telegram_updates_enabled": true
+  "edits": {
+    "aspect_fit": true,
+    "crop_edges": true,
+    "mirror_segments": true,
+    "global_flip": false,
+    "colour_grading": true,
+    "colour_curves": true,
+    "tone_warmth": true,
+    "vignette": true,
+    "zoom_punch": true,
+    "film_grain": true,
+    "unsharp_clarity": true,
+    "video_fade": true,
+    "audio_fade": true,
+    "denoise": true,
+    "loudness_normalise": true,
+    "pitch_shift": true,
+    "micro_speed": true,
+    "bgm_ducking": true,
+    "scene_trim": true,
+    "karaoke_subtitles": true,
+    "watermark": true
+  },
+  "publish": {
+    "youtube": {"categoryId": "24", "privacyStatus": "public", "madeForKids": false},
+    "facebook": {"published": true}
+  }
+}
