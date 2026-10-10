@@ -54,11 +54,15 @@ def source_usage() -> set:
 
 # ------------------------------------------------------------ source finding
 def channel_videos(url: str, cfg: dict) -> list:
-    """yt-dlp দিয়ে চ্যানেলের ভিডিওর তালিকা — মূল লিংক ছোঁয়া হয় না, শুধু মেটাডেটা।"""
+    """চ্যানেলের /videos ট্যাব থেকে আসল মেটাডেটা (তারিখ + দৈর্ঘ্য) — ফ্ল্যাট লিস্টিং নয়।"""
     import yt_dlp
+    clean_url = (url or "").split("?")[0].rstrip("/")
+    if not clean_url.endswith("/videos"):
+        clean_url += "/videos"
+    probe = int(cfg.get("metadata_probe_limit", 15))
     options = {"quiet": True, "no_warnings": True, "skip_download": True,
-               "extract_flat": "in_playlist", "ignoreerrors": True,
-               "playlistend": int(cfg.get("source_scan_limit", 200)),
+               "extract_flat": False, "ignoreerrors": True,
+               "playlistend": probe,
                "extractor_args": {"youtube": {"player_client": ["web_safari", "tv", "web"]}}}
     cookies = env("YT_COOKIES")
     if cookies:
@@ -66,48 +70,109 @@ def channel_videos(url: str, cfg: dict) -> list:
         jar.parent.mkdir(parents=True, exist_ok=True)
         jar.write_text(cookies, encoding="utf-8")
         options["cookiefile"] = str(jar)
-    with yt_dlp.YoutubeDL(options) as ydl:
-        info = ydl.extract_info(url, download=False)
+    try:
+        with yt_dlp.YoutubeDL(options) as ydl:
+            info = ydl.extract_info(clean_url, download=False)
+    except Exception as exc:
+        core.log(f"চ্যানেল স্ক্যান ব্যর্থ ({clean_url}): {clean_error(exc)}", "warn")
+        return []
     return [e for e in (info.get("entries") or []) if e]
 
 
 def pick_source(platform: str, slot: dict, cfg: dict) -> dict:
-    """day_filter (1/6/8/30/60/90) অনুযায়ী পুরোনো ভিডিও; ৮০ মিনিটের বেশি বাদ।"""
+    """বয়স ফিল্টার (0 = যেকোনো), দৈর্ঘ্য ক্যাপ, ডুপ্লিকেট বাদ — তারপর সেরাটা বেছে নেয়।"""
     day_filter = int(cfg.get("day_filter", 60))
+    if cfg.get("allow_any_age"):
+        day_filter = 0
     max_seconds = float(cfg.get("max_duration_minutes", 80)) * 60
     min_seconds = float(cfg.get("min_duration_seconds", 60))
+    trim_long = bool(cfg.get("trim_long_sources"))
     used = source_usage()
     now = time.time()
     candidates, problems = [], []
-    for channel in [slot["channel"]] + [c["channel"] for c in slots(cfg)
-                                        if c["platform"] == platform and c["channel"] != slot["channel"]]:
+    reasons = {"young": 0, "long": 0, "short": 0, "nometa": 0, "used": 0}
+    channels = [slot["channel"]] + [c["channel"] for c in slots(cfg)
+                                    if c["platform"] == platform and c["channel"] != slot["channel"]]
+    for channel in channels:
         if not channel:
             continue
-        try:
-            for entry in channel_videos(channel, cfg):
-                vid = entry.get("id")
-                url = entry.get("url") or (f"https://www.youtube.com/watch?v={vid}" if vid else "")
-                stamp = entry.get("timestamp") or entry.get("release_timestamp")
-                if not vid or url in used or vid in used:
+        entries = channel_videos(channel, cfg)
+        if not entries:
+            problems.append(f"{channel}: তালিকা খালি/স্ক্যান ব্যর্থ")
+            continue
+        for entry in entries:
+            vid = entry.get("id")
+            url = entry.get("url") or (f"https://www.youtube.com/watch?v={vid}" if vid else "")
+            if not vid or url in used or vid in used:
+                reasons["used"] += 1
+                continue
+            duration = float(entry.get("duration") or 0)
+            stamp = entry.get("timestamp") or entry.get("release_timestamp")
+            age_days = (now - float(stamp)) / 86400 if stamp else None
+            if age_days is None:
+                reasons["nometa"] += 1
+                if day_filter:
                     continue
-                duration = float(entry.get("duration") or 0)
-                if duration and (duration > max_seconds or duration < min_seconds):
-                    continue
-                age_days = (now - float(stamp)) / 86400 if stamp else None
-                if age_days is None or age_days < day_filter:
+            elif age_days < day_filter:
+                reasons["young"] += 1
+                continue
+            if duration and duration < min_seconds:
+                reasons["short"] += 1
+                continue
+            if duration and duration > max_seconds:
+                if not trim_long:
+                    reasons["long"] += 1
                     continue
                 candidates.append({"url": url, "id": vid, "title": entry.get("title") or "",
-                                   "duration": duration, "age_days": round(age_days, 1),
-                                   "views": entry.get("view_count") or 0, "channel": channel})
-        except Exception as exc:
-            problems.append(f"{channel}: {clean_error(exc)}")
+                                   "duration": duration, "age_days": round(age_days or 0, 1),
+                                   "views": entry.get("view_count") or 0, "channel": channel,
+                                   "trim_to": max_seconds})
+                continue
+            candidates.append({"url": url, "id": vid, "title": entry.get("title") or "",
+                               "duration": duration, "age_days": round(age_days or 0, 1),
+                               "views": entry.get("view_count") or 0, "channel": channel,
+                               "trim_to": 0})
     if problems:
         core.log("সোর্স স্ক্যান সতর্কতা: " + " | ".join(problems[:2]), "warn")
     if not candidates:
-        raise CoreError(f"{platform} slot {slot['slot']}: {day_filter} দিনের পুরোনো, "
-                        f"৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি")
+        raise CoreError(
+            f"{platform} slot {slot['slot']}: ব্যবহারযোগ্য ভিডিও পাওয়া যায়নি — "
+            f"বয়স ফিল্টার {day_filter or 'যেকোনো'} দিন, ক্যাপ {int(max_seconds // 60)} মিনিট। "
+            f"কারণ: কম পুরোনো {reasons['young']}, বেশি লম্বা {reasons['long']}, খাটো {reasons['short']}, "
+            f"তারিখ নেই {reasons['nometa']}, আগেই ব্যবহার করা {reasons['used']}।")
     candidates.sort(key=lambda item: (item["age_days"], -item["views"]))
     return candidates[0]
+
+
+def speed_video(path: str, factor: float) -> str:
+    """৮০ মিনিটের ক্যাপে আনার জন্য ffmpeg দিয়ে ভিডিও দ্রুত করে (শব্দের পিচ নষ্ট না করে)।"""
+    out = str(Path(path).with_name("fast.mp4"))
+    factor = min(2.0, max(1.02, factor))
+    editor.run([editor.FFMPEG, "-y", "-i", path,
+                "-filter_complex", f"[0:v]setpts=PTS/{factor:.6f}[v];[0:a]atempo={factor:.6f}[a]",
+                "-map", "[v]", "-map", "[a]",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+                "-c:a", "aac", "-b:a", "160k", out], timeout=7200)
+    return out
+
+
+def ensure_editable_length(source: dict, path: str, cfg: dict) -> str:
+    """৮০ মিনিটের বেশি হলে ক্যাপে নিয়ে আসে; trim_to = 0 হলে হাত দেয় না।"""
+    limit = float(source.get("trim_to") or 0)
+    if not limit:
+        return path
+    info = editor.probe(path)
+    duration = float(info.get("duration") or 0)
+    if duration <= limit or duration <= 0:
+        return path
+    need = limit / duration
+    factor = min(2.0, 1.0 / max(need, 0.5))
+    core.log(f"সোর্স {duration / 60:.1f} মিনিট → {factor:.3f}x দ্রুত করে ক্যাপে আনা হচ্ছে", "warn")
+    try:
+        return speed_video(path, factor)
+    except Exception as exc:
+        core.log("দ্রুত করা যায়নি, মূল ফাইলই ব্যবহার হবে: " + clean_error(exc), "warn")
+        return path
 
 
 def download_source(source: dict, folder: Path, cfg: dict) -> str:
@@ -131,8 +196,8 @@ def download_source(source: dict, folder: Path, cfg: dict) -> str:
             if path.suffix.lower() != ".mp4":
                 target = folder / "source.mp4"
                 editor.run([editor.FFMPEG, "-y", "-i", str(path), "-c", "copy", str(target)], timeout=3600)
-                return str(target)
-            return str(path)
+                return ensure_editable_length(source, str(target), cfg)
+            return ensure_editable_length(source, str(path), cfg)
     raise CoreError("ডাউনলোড করা ফাইল পাওয়া যায়নি")
 
 
@@ -527,4 +592,9 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    try:
+        from bot import handle_bot_command
+        handle_bot_command(core.load_config())
+    except Exception:
+        pass
     sys.exit(main())
