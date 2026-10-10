@@ -55,13 +55,14 @@
     "error": "CoreError: youtube slot 2: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
   },
   "youtube-3": {
-    "state": "downloading",
+    "state": "failed",
     "attempt": 1,
     "key": "youtube-3",
-    "updated_at": "2026-10-10 06:24:14",
+    "updated_at": "2026-10-10 06:24:24",
     "created_at": "2026-10-10 06:24:13",
     "platform": "youtube",
     "slot": 3,
-    "upload_time": "22:00"
+    "upload_time": "22:00",
+    "error": "CoreError: youtube slot 3: 60 দিনের পুরোনো, ৮০ মিনিটের কম দৈর্ঘ্যের নতুন ভিডিও পাওয়া যায়নি"
   }
 }
