@@ -1,0 +1,8 @@
+{
+  "log": [],
+  "counters": {"edited_today": 0, "uploaded_today": 0, "failed_today": 0},
+  "queue": [],
+  "stats": {},
+  "bot": {"online": false, "interval": "৫ মিনিটে অটো আপডেট"},
+  "run": {"mode": "idle", "detail": "সিস্টেম প্রস্তুত — অপেক্ষারত"}
+}
