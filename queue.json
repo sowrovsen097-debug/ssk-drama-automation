@@ -1,9 +1,9 @@
 {
   "facebook-1": {
-    "state": "preparing",
+    "state": "downloading",
     "attempt": 4,
     "key": "facebook-1",
-    "updated_at": "2026-10-10 07:31:10",
+    "updated_at": "2026-10-10 07:31:12",
     "created_at": "2026-10-10 06:22:42",
     "platform": "facebook",
     "slot": 1,
