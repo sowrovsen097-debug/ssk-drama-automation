@@ -1,8 +1,0 @@
-requests==2.32.3
-yt-dlp
-openai-whisper
-opencv-python-headless
-google-api-python-client
-google-auth
-google-auth-httplib2
-setuptools

@@ -1,0 +1,13 @@
+yt-dlp
+requests
+requests-toolbelt
+google-generativeai
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+faster-whisper
+opencv-python-headless
+numpy
+Pillow
+pytz
