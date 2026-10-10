@@ -1,6 +1,0 @@
-{
-  "state": "error",
-  "message": "Hi",
-  "created_at": "2026-10-07T01:08:21.963Z",
-  "answer": "503 Server Error: Service Unavailable for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent"
-}
