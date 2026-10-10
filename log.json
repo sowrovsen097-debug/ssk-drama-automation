@@ -154,7 +154,12 @@
       "at": "2026-10-10 07:31:08",
       "level": "info",
       "text": "run শুরু — mode=prepare"
+    },
+    {
+      "at": "2026-10-10 07:32:54",
+      "level": "warn",
+      "text": "সোর্স স্ক্যান সতর্কতা: https://youtube.com/@admdindiancriminalminds-z6t: তালিকা খালি/স্ক্যান ব্যর্থ | https://youtube.com/@crimealert_4k: তালিকা খালি/স্ক্যান ব্যর্থ"
     }
   ],
-  "updated_at": "2026-10-10 07:31:08"
+  "updated_at": "2026-10-10 07:32:54"
 }
