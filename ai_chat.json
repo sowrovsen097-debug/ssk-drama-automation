@@ -1,1 +1,10 @@
-{"msgs": []}
+{
+  "msgs": [
+    {
+      "role": "user",
+      "text": "Hi",
+      "answered": false,
+      "t": "10/10/2026, 14:52:14"
+    }
+  ]
+}
