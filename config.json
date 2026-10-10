@@ -1,7 +1,23 @@
 {
   "version": 3,
-  "facebook_channels": ["", "", ""],
-  "youtube_channels": ["", "", ""],
-  "fb_upload_times_bst": ["10:00", "15:00", "20:00"],
-  "yt_upload_times_bst": ["08:00", "15:00", "22:00"]
+  "facebook_channels": [
+    "",
+    "",
+    ""
+  ],
+  "youtube_channels": [
+    "",
+    "",
+    ""
+  ],
+  "fb_upload_times_bst": [
+    "10:00",
+    "15:00",
+    "20:00"
+  ],
+  "yt_upload_times_bst": [
+    "08:00",
+    "15:00",
+    "22:00"
+  ]
 }
