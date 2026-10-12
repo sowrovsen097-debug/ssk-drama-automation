@@ -133,13 +133,13 @@
   },
   "2026-10-12-youtube-2": {
     "key": "2026-10-12-youtube-2",
-    "state": "preparing",
+    "state": "failed",
     "platform": "youtube",
     "slot": 1,
     "date": "2026-10-12",
     "time": "15:00",
     "started_at": "2026-10-12T14:56:35+06:00",
-    "error": null,
+    "error": "name 'history_sources' is not defined",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -162,6 +162,6 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-12T14:56:35+06:00"
+    "updated_at": "2026-10-12T14:56:37+06:00"
   }
 }
