@@ -1,0 +1,9 @@
+{
+  "items": [
+    {
+      "at": "2026-10-12T14:56:03+06:00",
+      "level": "error",
+      "text": "2026-10-12-facebook-1: ব্যর্থ — name 'history_sources' is not defined"
+    }
+  ]
+}
