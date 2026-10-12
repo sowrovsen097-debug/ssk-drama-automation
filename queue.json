@@ -34,13 +34,13 @@
   },
   "2026-10-12-facebook-2": {
     "key": "2026-10-12-facebook-2",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 1,
     "date": "2026-10-12",
     "time": "15:00",
     "started_at": "2026-10-12T23:32:00+06:00",
-    "error": null,
+    "error": "name 'history_sources' is not defined",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -63,7 +63,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-12T23:32:00+06:00"
+    "updated_at": "2026-10-12T23:32:02+06:00"
   },
   "2026-10-12-facebook-3": {
     "key": "2026-10-12-facebook-3",
