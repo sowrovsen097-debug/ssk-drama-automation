@@ -2,19 +2,23 @@ name: SSK Upload & Observe
 
 on:
   schedule:
-    - cron: "*/10 * * * *"     # প্রতি ১০ মিনিটে আপলোড সময় দেখে
-    - cron: "*/20 * * * *"     # প্রতি ২০ মিনিটে স্টেটাস/চ্যাট/ক্লিনআপ
+    - cron: "*/10 * * * *"     # প্রতি ১০ মিনিটে: সময় হওয়া ভিডিও আপলোড
+    - cron: "*/20 * * * *"     # প্রতি ২০ মিনিটে: স্টেটাস, বট কমান্ড, চ্যাট উত্তর, ক্লিনআপ
   repository_dispatch:
     types: [ssk]
   workflow_dispatch:
     inputs:
       mode:
-        description: "upload | service | scan"
+        description: "কী চালাবে"
         type: choice
-        options: [upload, service, scan]
+        options:
+          - service
+          - upload
+          - scan
+          - prepare
         default: service
       force:
-        description: "prepare সরাসরি চালাতে (1)"
+        description: "এডিট উইন্ডো না মেনে এখনই এডিট (prepare-এর জন্য 1)"
         type: string
         default: "0"
 
@@ -44,6 +48,7 @@ env:
   YT_COOKIES: ${{ secrets.YT_COOKIES }}
 
 jobs:
+  # ১) আপলোড — সময় হওয়া (রেডি) ভিডিও Drive থেকে এনে প্ল্যাটফর্মে দেয়
   upload:
     if: >-
       github.event.schedule == '*/10 * * * *' ||
@@ -62,6 +67,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python main.py
 
+  # ২) স্ক্যান — কোন চ্যানেলে কী পাওয়া যাচ্ছে (কুকি ঠিক আছে কি না বোঝার সহজ উপায়)
   scan:
     if: >-
       github.event.client_payload.mode == 'scan' ||
@@ -79,6 +85,7 @@ jobs:
           pip install --upgrade yt-dlp requests
       - run: python main.py --scan
 
+  # ৩) এখনই এডিট — উইন্ডো না মেনে সরাসরি প্রস্তুতি
   prepare:
     if: >-
       github.event.client_payload.mode == 'prepare' ||
@@ -102,13 +109,14 @@ jobs:
           pip install -r requirements.txt
       - run: python main.py
 
+  # ৪) মনিটর — স্টেটাস লেখা, বট কমান্ড (retry/cancel/cleanup), চ্যাটের উত্তর, স্টোরেজ পরিষ্কার
   observe:
     if: >-
       github.event.schedule == '*/20 * * * *' ||
-      (github.event.client_payload.mode == 'service') ||
+      github.event.client_payload.mode == 'service' ||
       (github.event_name == 'workflow_dispatch' && inputs.mode == 'service')
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       APP_MODE: service
     steps:
