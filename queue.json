@@ -67,13 +67,13 @@
   },
   "2026-10-12-facebook-3": {
     "key": "2026-10-12-facebook-3",
-    "state": "failed",
+    "state": "preparing",
     "platform": "facebook",
     "slot": 2,
     "date": "2026-10-12",
     "time": "20:00",
-    "started_at": "2026-10-12T14:58:40+06:00",
-    "error": "name 'history_sources' is not defined",
+    "started_at": "2026-10-12T23:32:07+06:00",
+    "error": null,
     "edits": [
       "aspect_fit",
       "mirror",
@@ -96,7 +96,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-12T14:58:42+06:00"
+    "updated_at": "2026-10-12T23:32:07+06:00"
   },
   "2026-10-12-youtube-1": {
     "key": "2026-10-12-youtube-1",
