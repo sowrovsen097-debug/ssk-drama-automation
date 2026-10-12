@@ -1,0 +1,4 @@
+requests>=2.32
+yt-dlp
+openai-whisper
+setuptools
