@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-12T14:56:32+06:00",
+  "updated_at": "2026-10-12T14:56:41+06:00",
   "paused": true,
   "counts": {
-    "failed": 4
+    "failed": 5
   },
   "jobs": {
     "2026-10-12-facebook-1": {
@@ -136,6 +136,39 @@
         "audio_fade"
       ],
       "updated_at": "2026-10-12T14:56:28+06:00"
+    },
+    "2026-10-12-youtube-2": {
+      "key": "2026-10-12-youtube-2",
+      "state": "failed",
+      "platform": "youtube",
+      "slot": 1,
+      "date": "2026-10-12",
+      "time": "15:00",
+      "started_at": "2026-10-12T14:56:35+06:00",
+      "error": "name 'history_sources' is not defined",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-12T14:56:37+06:00"
     }
   },
   "progress": {},
