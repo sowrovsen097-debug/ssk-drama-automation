@@ -1,0 +1,121 @@
+name: SSK Upload & Observe
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"     # প্রতি ১০ মিনিটে আপলোড সময় দেখে
+    - cron: "*/20 * * * *"     # প্রতি ২০ মিনিটে স্টেটাস/চ্যাট/ক্লিনআপ
+  repository_dispatch:
+    types: [ssk]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "upload | service | scan"
+        type: choice
+        options: [upload, service, scan]
+        default: service
+      force:
+        description: "prepare সরাসরি চালাতে (1)"
+        type: string
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssk-service
+  cancel-in-progress: false
+
+env:
+  APP_BRANCH: main
+  APP_TOKEN: ${{ github.token }}
+  APP_REPOSITORY: ${{ github.repository }}
+  APP_WORK: work
+  FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+  FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+  FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+  GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+  YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+  YT_COOKIES: ${{ secrets.YT_COOKIES }}
+
+jobs:
+  upload:
+    if: >-
+      github.event.schedule == '*/10 * * * *' ||
+      github.event.client_payload.mode == 'upload' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'upload')
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    env:
+      APP_MODE: upload
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python main.py
+
+  scan:
+    if: >-
+      github.event.client_payload.mode == 'scan' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'scan')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade yt-dlp requests
+      - run: python main.py --scan
+
+  prepare:
+    if: >-
+      github.event.client_payload.mode == 'prepare' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'prepare')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      APP_MODE: prepare
+      APP_FORCE: ${{ github.event.client_payload.force || inputs.force || '1' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-noto-extra
+          python -m pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+      - run: python main.py
+
+  observe:
+    if: >-
+      github.event.schedule == '*/20 * * * *' ||
+      (github.event.client_payload.mode == 'service') ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'service')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      APP_MODE: service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install requests
+      - run: python main.py
