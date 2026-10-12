@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-12T23:32:13+06:00",
+  "updated_at": "2026-10-12T23:32:20+06:00",
   "paused": true,
   "counts": {
     "failed": 6
@@ -111,7 +111,7 @@
       "slot": 0,
       "date": "2026-10-12",
       "time": "08:00",
-      "started_at": "2026-10-12T14:58:48+06:00",
+      "started_at": "2026-10-12T23:32:15+06:00",
       "error": "name 'history_sources' is not defined",
       "edits": [
         "aspect_fit",
@@ -135,7 +135,7 @@
         "crop_edges",
         "audio_fade"
       ],
-      "updated_at": "2026-10-12T14:58:50+06:00"
+      "updated_at": "2026-10-12T23:32:16+06:00"
     },
     "2026-10-12-youtube-2": {
       "key": "2026-10-12-youtube-2",
