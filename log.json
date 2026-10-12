@@ -109,6 +109,11 @@
       "at": "2026-10-12T23:32:18+06:00",
       "level": "error",
       "text": "2026-10-12-youtube-1: ব্যর্থ — name 'history_sources' is not defined"
+    },
+    {
+      "at": "2026-10-12T23:32:25+06:00",
+      "level": "error",
+      "text": "2026-10-12-youtube-2: ব্যর্থ — name 'history_sources' is not defined"
     }
   ]
 }
