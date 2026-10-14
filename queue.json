@@ -529,13 +529,13 @@
   },
   "2026-10-15-youtube-2": {
     "key": "2026-10-15-youtube-2",
-    "state": "preparing",
+    "state": "failed",
     "platform": "youtube",
     "slot": 1,
     "date": "2026-10-15",
     "time": "15:00",
     "started_at": "2026-10-15T04:17:22+06:00",
-    "error": null,
+    "error": "youtube slot 2: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -558,6 +558,6 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-15T04:17:23+06:00"
+    "updated_at": "2026-10-15T04:19:26+06:00"
   }
 }
