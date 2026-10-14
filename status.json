@@ -1,9 +1,8 @@
 {
-  "updated_at": "2026-10-14T10:53:33+06:00",
+  "updated_at": "2026-10-14T10:59:05+06:00",
   "paused": false,
   "counts": {
-    "pending": 6,
-    "failed": 6
+    "pending": 12
   },
   "jobs": {
     "2026-10-12-facebook-1": {
@@ -206,13 +205,13 @@
     },
     "2026-10-14-facebook-1": {
       "key": "2026-10-14-facebook-1",
-      "state": "failed",
+      "state": "pending",
       "platform": "facebook",
       "slot": 0,
       "date": "2026-10-14",
       "time": "10:00",
       "started_at": "2026-10-14T08:35:32+06:00",
-      "error": "facebook slot 1: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "error": null,
       "edits": [
         "aspect_fit",
         "mirror",
@@ -239,13 +238,13 @@
     },
     "2026-10-14-facebook-2": {
       "key": "2026-10-14-facebook-2",
-      "state": "failed",
+      "state": "pending",
       "platform": "facebook",
       "slot": 1,
       "date": "2026-10-14",
       "time": "15:00",
       "started_at": "2026-10-14T08:37:43+06:00",
-      "error": "facebook slot 2: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "error": null,
       "edits": [
         "aspect_fit",
         "mirror",
@@ -272,13 +271,13 @@
     },
     "2026-10-14-facebook-3": {
       "key": "2026-10-14-facebook-3",
-      "state": "failed",
+      "state": "pending",
       "platform": "facebook",
       "slot": 2,
       "date": "2026-10-14",
       "time": "20:00",
       "started_at": "2026-10-14T08:39:51+06:00",
-      "error": "facebook slot 3: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "error": null,
       "edits": [
         "aspect_fit",
         "mirror",
@@ -305,13 +304,13 @@
     },
     "2026-10-14-youtube-1": {
       "key": "2026-10-14-youtube-1",
-      "state": "failed",
+      "state": "pending",
       "platform": "youtube",
       "slot": 0,
       "date": "2026-10-14",
       "time": "08:00",
       "started_at": "2026-10-14T08:42:00+06:00",
-      "error": "youtube slot 1: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "error": null,
       "edits": [
         "aspect_fit",
         "mirror",
@@ -338,13 +337,13 @@
     },
     "2026-10-14-youtube-2": {
       "key": "2026-10-14-youtube-2",
-      "state": "failed",
+      "state": "pending",
       "platform": "youtube",
       "slot": 1,
       "date": "2026-10-14",
       "time": "15:00",
       "started_at": "2026-10-14T08:44:10+06:00",
-      "error": "youtube slot 2: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "error": null,
       "edits": [
         "aspect_fit",
         "mirror",
@@ -371,13 +370,13 @@
     },
     "2026-10-14-youtube-3": {
       "key": "2026-10-14-youtube-3",
-      "state": "failed",
+      "state": "pending",
       "platform": "youtube",
       "slot": 2,
       "date": "2026-10-14",
       "time": "22:00",
       "started_at": "2026-10-14T08:46:19+06:00",
-      "error": "youtube slot 3: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "error": null,
       "edits": [
         "aspect_fit",
         "mirror",
