@@ -394,5 +394,38 @@
       "audio_fade"
     ],
     "updated_at": "2026-10-14T08:48:22+06:00"
+  },
+  "2026-10-15-facebook-1": {
+    "key": "2026-10-15-facebook-1",
+    "state": "preparing",
+    "platform": "facebook",
+    "slot": 0,
+    "date": "2026-10-15",
+    "time": "10:00",
+    "started_at": "2026-10-15T04:08:18+06:00",
+    "error": null,
+    "edits": [
+      "aspect_fit",
+      "mirror",
+      "colour_grade",
+      "vignette",
+      "grain",
+      "unsharp",
+      "zoom_punch",
+      "scene_trim",
+      "fade_in_out",
+      "denoise",
+      "loudness",
+      "pitch",
+      "micro_speed",
+      "bgm_ducking",
+      "karaoke_subtitles",
+      "watermark",
+      "saturation",
+      "contrast",
+      "crop_edges",
+      "audio_fade"
+    ],
+    "updated_at": "2026-10-15T04:08:19+06:00"
   }
 }
