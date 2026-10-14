@@ -8,6 +8,8 @@ import subprocess
 import time
 from pathlib import Path
 
+import requests
+
 import core
 from core import SskError, clean, env
 
@@ -72,6 +74,61 @@ def font_file() -> str | None:
     return None
 
 
+# ------------------------------------------------------- channel sanitizing
+def norm_channel_url(raw) -> str:
+    """যেকোনো রকম লেখা থেকে সঠিক চ্যানেল লিংক বানায়; ভুল/খালি হলে '' ফেরত দেয়।
+
+    @crimealert            -> https://youtube.com/@crimealert
+    crimealert             -> https://youtube.com/@crimealert
+    youtube.com/@x/        -> https://youtube.com/@x
+    UCxxxxxxxxxxxxxxxxxxxx -> https://youtube.com/channel/UCxxxx...
+    https://youtube.com/@   -> ''   (এই খালি হ্যান্ডেলটাই আগের বাগ ছিল)
+    """
+    s = str(raw or "").strip().replace("\u200b", "")
+    s = re.sub(r"^[•\*\-\s]+", "", s).strip()
+    if not s:
+        return ""
+    if s.startswith("@"):
+        handle = s[1:].strip()
+        return "https://youtube.com/@" + handle if re.fullmatch(r"[A-Za-z0-9_.\-]{3,}", handle) else ""
+    if re.match(r"^(https?://)?(www\.)?(m\.)?youtube\.com/", s, re.I) or \
+       re.match(r"^(https?://)?youtu\.be/", s, re.I):
+        u = s if s.lower().startswith("http") else "https://" + s
+        u = re.sub(r"^http://", "https://", u, flags=re.I)
+        u = u.split("?")[0].rstrip("/")
+        u = re.sub(r"^https://(www\.|m\.)?youtube\.com", "https://youtube.com", u, flags=re.I)
+        rest = u.split("youtube.com/", 1)[-1] if "youtube.com/" in u else u
+        if not rest or rest in ("@", "c", "channel", "user"):
+            return ""
+        if rest.startswith("@"):
+            return u if re.fullmatch(r"[A-Za-z0-9_.\-]{3,}", rest[1:]) else ""
+        return u
+    if re.fullmatch(r"UC[A-Za-z0-9_\-]{20,}", s):
+        return "https://youtube.com/channel/" + s
+    if re.fullmatch(r"[A-Za-z0-9_.\-]{3,}", s):
+        return "https://youtube.com/@" + s
+    return ""
+
+
+def clean_channels(cfg: dict, platform: str) -> list:
+    """config থেকে বৈধ চ্যানেলের তালিকা (ক্রম ঠিক রেখে, ডুপ্লিকেট ও খালি বাদ)।"""
+    out = []
+    for raw in (cfg.get(f"{platform}_channels") or []):
+        c = norm_channel_url(raw)
+        if c and c not in out:
+            out.append(c)
+    return out
+
+
+def channel_for_slot(cfg: dict, platform: str, slot: int) -> str:
+    """প্রতিটি স্লটের নিজের চ্যানেল: স্লট ০ → প্রথম, স্লট ১ → দ্বিতীয়, ..."""
+    chans = clean_channels(cfg, platform)
+    if not chans:
+        raise SskError(f"{platform}-এর কোনো বৈধ চ্যানেল সেট করা নেই "
+                       "(ড্যাশবোর্ডের চ্যানেল কার্ডে স্লটগুলো ভরো)")
+    return chans[slot % len(chans)]
+
+
 # ------------------------------------------------------------------ yt-dlp
 def scan_channel(url: str, limit: int = 15, cookies: str = "") -> list:
     import yt_dlp
@@ -89,13 +146,15 @@ def scan_channel(url: str, limit: int = 15, cookies: str = "") -> list:
 
 
 def pick_source(cfg: dict, platform: str, slot: int) -> dict:
-    channels = cfg.get(f"{platform}_channels") or []
+    channels = clean_channels(cfg, platform)
     if not channels:
         raise SskError(f"{platform}-এর চ্যানেল সেট করা নেই")
-    own = channels[slot % len(channels)]
+    own = channel_for_slot(cfg, platform, slot)
     order = [own] + [c for c in channels if c != own]
-    used = history_sources(platform) | {j.get("source_id") for j in core.jobs().values()
-                                        if j.get("platform") == platform}
+    # ✅ আগের বাগ: এখানে history_sources(...) লেখা ছিল, কিন্তু সেটি core-এর ভেতরে —
+    # তাই "name 'history_sources' is not defined" এররে ৬টি কাজই ব্যর্থ হচ্ছিল।
+    used = core.history_sources(platform) | {j.get("source_id") for j in core.jobs().values()
+                                             if j.get("platform") == platform}
     day = 0 if cfg.get("allow_any_age") else int(cfg.get("day_filter", 60))
     cap = float(cfg.get("max_duration_minutes", 80)) * 60
     floor = float(cfg.get("min_duration_seconds", 60))
@@ -425,6 +484,3 @@ def freesound_music(cfg: dict, folder: Path) -> Path | None:
     except Exception as exc:
         core.log("মিউজিক আনা যায়নি: " + clean(exc), "warn")
         return None
-
-
-import requests  # noqa: E402  (freesound_music ব্যবহার করে)
