@@ -1,9 +1,11 @@
 {
   "mode": "scan",
   "key": "",
-  "state": "pending",
+  "state": "done",
   "at": "2026-10-14T04:58:24.983Z",
   "extra": {
     "key": ""
-  }
+  },
+  "result": "yt-dlp: অজানা\nকুকি: আছে (2983 অক্ষর)\n\n— FACEBOOK (3টি বৈধ চ্যানেল) —\n❌ স্লট 1 · https://youtube.com/@admdindiancriminalminds-z6t\n   No module named 'yt_dlp'\n❌ স্লট 2 · https://youtube.com/@crimealert_4k\n   No module named 'yt_dlp'\n❌ স্লট 3 · https://youtube.com/@crimealert\n   No module named 'yt_dlp'\n\n— YOUTUBE (3টি বৈধ চ্যানেল) —\n❌ স্লট 1 · https://youtube.com/@apradhkijaanch\n   No module named 'yt_dlp'\n❌ স্লট 2 · https://youtube.com/@crimealertbharat-u5w\n   No module named 'yt_dlp'\n❌ স্লট 3 · https://youtube.com/@alert100hindiwebseries\n   No module named 'yt_dlp'\n\nমনে রাখো: ব্যবহারযোগ্য ০ হলে ভিডিও তৈরি হবে না — day_filter (60 দিন) কমাও, trim_long_sources চালু করো, বা metadata_probe_limit বাড়াও।",
+  "finished_at": "2026-10-14T10:59:03+06:00"
 }
