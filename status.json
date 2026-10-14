@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-15T04:10:32+06:00",
+  "updated_at": "2026-10-15T04:12:46+06:00",
   "paused": false,
   "counts": {
     "pending": 12,
-    "failed": 1
+    "failed": 2
   },
   "jobs": {
     "2026-10-12-facebook-1": {
@@ -434,6 +434,39 @@
         "audio_fade"
       ],
       "updated_at": "2026-10-15T04:10:28+06:00"
+    },
+    "2026-10-15-facebook-2": {
+      "key": "2026-10-15-facebook-2",
+      "state": "failed",
+      "platform": "facebook",
+      "slot": 1,
+      "date": "2026-10-15",
+      "time": "15:00",
+      "started_at": "2026-10-15T04:10:33+06:00",
+      "error": "facebook slot 2: ব্যবহারযোগ্য ভিডিও নেই (বয়স 60 দিন, ক্যাপ 80 মিনিট) — কম পুরোনো 0, বেশি লম্বা 0, খাটো 0, তারিখ নেই 0, আগেই ব্যবহৃত 0",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-15T04:12:41+06:00"
     }
   },
   "progress": {
