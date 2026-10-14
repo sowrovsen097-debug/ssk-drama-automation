@@ -1,10 +1,12 @@
 """SSK DRAMA bot — Actions-এর দিকের কাজ: স্ক্যান রিপোর্ট, রেট্রাই/বাতিল/পরিষ্কার, চ্যাটের উত্তর।
 
-কমান্ড ফাইল: bot_command.json  →  {"mode": "scan|retry|cancel|cleanup", "state": "pending", "key": "..."}
+কমান্ড ফাইল: bot_command.json → {"mode": "scan|retry|cancel|cleanup", "state": "pending", "key": "..."}
 চ্যাট ফাইল: chat/<id>.json + chat/index.json
 """
 from __future__ import annotations
 
+import json
+import sys
 import time
 
 import core
@@ -45,20 +47,22 @@ def scan_report(cfg: dict, probe: int | None = None) -> str:
             pass
 
     for platform in ("facebook", "youtube"):
-        channels = cfg.get(f"{platform}_channels") or []
-        lines.append(f"\n— {platform.upper()} ({len(channels)}টি চ্যানেল) —")
+        channels = media.clean_channels(cfg, platform)
+        raw_count = len(cfg.get(f"{platform}_channels") or [])
+        lines.append(f"\n— {platform.upper()} ({len(channels)}টি বৈধ চ্যানেল) —")
+        if raw_count > len(channels):
+            lines.append(f"⚠️ {raw_count - len(channels)}টি লিংক বোঝা যায়নি / খালি ছিল — ঠিক করো")
         if not channels:
-            lines.append("⚠️ কোনো চ্যানেল সেট করা নেই")
+            lines.append("⚠️ কোনো বৈধ চ্যানেল সেট করা নেই")
             continue
-        for channel in channels:
-            url = str(channel).split("?")[0].rstrip("/")
+        for idx, url in enumerate(channels):
             try:
                 entries = media.scan_channel(url, limit, cookies)
             except Exception as exc:
-                lines.append(f"❌ {url}\n   {core.clean(exc, 220)}")
+                lines.append(f"❌ স্লট {idx + 1} · {url}\n   {core.clean(exc, 220)}")
                 continue
             if not entries:
-                lines.append(f"⚠️ {url}\n   তালিকা খালি — কুকি/লিংক দেখো")
+                lines.append(f"⚠️ স্লট {idx + 1} · {url}\n   তালিকা খালি — কুকি/লিংক দেখো")
                 continue
             good = long_ = young = nometa = already = 0
             newest, oldest = None, None
@@ -85,11 +89,12 @@ def scan_report(cfg: dict, probe: int | None = None) -> str:
             span = ""
             if newest is not None:
                 span = f" · বয়স {newest:.0f}–{oldest:.0f} দিন"
-            lines.append(f"✅ {url}\n   পাওয়া {len(entries)} · ব্যবহারযোগ্য {good}"
+            lines.append(f"✅ স্লট {idx + 1} · {url}\n   পাওয়া {len(entries)} · ব্যবহারযোগ্য {good}"
                          f" · বেশি লম্বা {long_} · কম পুরোনো/খাটো {young}"
                          f" · তারিখ নেই {nometa} · আগেই ব্যবহৃত {already}{span}")
-    lines.append("\nমনে রাখো: ব্যবহারযোগ্য ০ হলে ভিডিও তৈরি হবে না, "
-                 f"তখন day_filter ({day or 'যেকোনো'} দিন) কমাও বা max_duration_minutes বাড়াও।")
+    lines.append("\nমনে রাখো: ব্যবহারযোগ্য ০ হলে ভিডিও তৈরি হবে না — "
+                 f"day_filter ({day or 'যেকোনো'} দিন) কমাও, trim_long_sources চালু করো, "
+                 "বা metadata_probe_limit বাড়াও।")
     return "\n".join(lines)
 
 
@@ -131,6 +136,13 @@ def do_cleanup(cfg: dict) -> str:
         else:
             kept += 1
     return f"{removed}টি ফাইল Drive থেকে মুছে ফেলা হলো · {kept}টি এখনো দরকার, রাখা হলো"
+
+
+def scan_and_report(cfg: dict, probe=None) -> str:
+    """একবারে স্ক্যান + টেলিগ্রামে পাঠানো।"""
+    text = scan_report(cfg, probe)
+    core.telegram("🔎 SSK DRAMA স্ক্যান\n\n" + text[:3500])
+    return text
 
 
 def handle_commands(cfg: dict) -> bool:
@@ -201,13 +213,8 @@ def handle_commands(cfg: dict) -> bool:
 
 
 if __name__ == "__main__":
-    import json
-    import sys
     cfg = core.load_config()
     if len(sys.argv) > 1 and sys.argv[1] == "scan":
-        text = scan_report(cfg)
-        print(text, flush=True)
-        core.telegram("🔎 SSK DRAMA স্ক্যান\n\n" + text[:3500])
+        print(scan_and_report(cfg), flush=True)
     else:
-        done = handle_commands(cfg)
-        print(json.dumps({"commands_handled": done}, ensure_ascii=False), flush=True)
+        print(json.dumps({"commands_handled": handle_commands(cfg)}, ensure_ascii=False), flush=True)
