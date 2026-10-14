@@ -34,7 +34,7 @@
   "metadata_probe_limit": 15,
   "source_scan_limit": 40,
   "whisper_model": "base",
-  "gemini_model": "gemini-3.8-flash-lite",
+  "gemini_model": "gemini-3.1-flash-lite",
   "micro_speed": 1.03,
   "pitch_ratio": 1.022,
   "music_enabled": true,
