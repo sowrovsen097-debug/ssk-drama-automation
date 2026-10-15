@@ -99,6 +99,11 @@
       "at": "2026-10-16T04:13:27+06:00",
       "level": "info",
       "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealertbharat-u5w/videos) — 177টি"
+    },
+    {
+      "at": "2026-10-16T04:13:29+06:00",
+      "level": "warn",
+      "text": "YouTube API তালিকা ব্যর্থ (https://youtube.com/@alert100hindiwebseries/videos): YouTube API playlistItems 404: { \"error\": { \"code\": 404, \"message\": \"The playlist identified with the request's \\u003ccode\\u003eplaylistId\\u003c/code\\u003e para"
     }
   ]
 }
