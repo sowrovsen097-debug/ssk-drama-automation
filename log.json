@@ -19,6 +19,11 @@
       "at": "2026-10-16T04:03:30+06:00",
       "level": "info",
       "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealert_4k/videos) — 300টি"
+    },
+    {
+      "at": "2026-10-16T04:04:33+06:00",
+      "level": "info",
+      "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealert/videos) — 300টি"
     }
   ]
 }
