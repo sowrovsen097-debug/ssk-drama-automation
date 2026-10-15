@@ -149,6 +149,11 @@
       "at": "2026-10-16T04:15:57+06:00",
       "level": "error",
       "text": "2026-10-16-youtube-2: ব্যর্থ — ERROR: [youtube] ZgbMxqCRjb4: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-16T04:16:04+06:00",
+      "level": "warn",
+      "text": "YouTube API তালিকা ব্যর্থ (https://youtube.com/@alert100hindiwebseries/videos): YouTube API playlistItems 404: { \"error\": { \"code\": 404, \"message\": \"The playlist identified with the request's \\u003ccode\\u003eplaylistId\\u003c/code\\u003e para"
     }
   ]
 }
