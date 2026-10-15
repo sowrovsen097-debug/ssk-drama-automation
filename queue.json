@@ -74,13 +74,13 @@
   },
   "2026-10-16-facebook-1": {
     "key": "2026-10-16-facebook-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-16",
     "time": "10:00",
     "started_at": "2026-10-16T04:01:24+06:00",
-    "error": null,
+    "error": "ERROR: [youtube] U5bnbWTtcwc: The page needs to be reloaded.",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -103,7 +103,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-16T04:04:35+06:00",
+    "updated_at": "2026-10-16T04:04:40+06:00",
     "source_id": "U5bnbWTtcwc",
     "source_url": "https://www.youtube.com/watch?v=U5bnbWTtcwc",
     "source_title": "Ek Kahani | PAGAL DEWANA | Episode 436 | Hindi Show | Crime Alert #dangaltvshow",
