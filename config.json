@@ -30,8 +30,9 @@
   "keep_ratio": 0.8125,
   "max_duration_minutes": 80,
   "min_duration_seconds": 60,
-  "trim_long_sources": false,
-  "metadata_probe_limit": 15,
+  "trim_long_sources": true,
+  "metadata_probe_limit": 20,
+  "api_scan_limit": 300,
   "source_scan_limit": 40,
   "whisper_model": "base",
   "gemini_model": "gemini-3.1-flash-lite",
@@ -45,6 +46,6 @@
   "facebook_page_id": "me",
   "youtube_privacy": "public",
   "telegram_updates_enabled": true,
-  "bot_worker_url": "https://sskdrama.konoksen780.workers.dev",
+  "bot_worker_url": "https://sskdrama.kokoksen780.workers.dev",
   "theme": "sunset"
 }
