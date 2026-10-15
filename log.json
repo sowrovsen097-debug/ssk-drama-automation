@@ -164,6 +164,11 @@
       "at": "2026-10-16T04:18:08+06:00",
       "level": "info",
       "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealertbharat-u5w/videos) — 177টি"
+    },
+    {
+      "at": "2026-10-16T04:18:10+06:00",
+      "level": "warn",
+      "text": "স্ক্যান সতর্কতা: https://youtube.com/@alert100hindiwebseries: তালিকা খালি"
     }
   ]
 }
