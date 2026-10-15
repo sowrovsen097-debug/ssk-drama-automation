@@ -1,13 +1,13 @@
 {
   "2026-10-15-facebook-1": {
     "key": "2026-10-15-facebook-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-15",
     "time": "10:00",
     "started_at": "2026-10-15T08:34:50+06:00",
-    "error": null,
+    "error": "ERROR: [youtube] TtuRKmVKAKk: The page needs to be reloaded.",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -30,7 +30,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-15T08:37:58+06:00",
+    "updated_at": "2026-10-15T08:38:03+06:00",
     "source_id": "TtuRKmVKAKk",
     "source_url": "https://www.youtube.com/watch?v=TtuRKmVKAKk",
     "source_title": "Ek Kahani | JUNOONI AASHIQ | Episode 441 | Hindi Show | Crime Alert #dangaltvshow",
