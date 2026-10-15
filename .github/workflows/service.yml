@@ -125,5 +125,7 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: pip install requests
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade yt-dlp requests
       - run: python main.py
