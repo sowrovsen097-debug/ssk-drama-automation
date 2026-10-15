@@ -1,9 +1,10 @@
 {
-  "updated_at": "2026-10-16T03:51:49+06:00",
+  "updated_at": "2026-10-16T04:04:44+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
-    "preparing": 1
+    "preparing": 1,
+    "failed": 1
   },
   "jobs": {
     "2026-10-15-facebook-1": {
@@ -78,6 +79,45 @@
         "audio_fade"
       ],
       "updated_at": "2026-10-15T08:38:09+06:00"
+    },
+    "2026-10-16-facebook-1": {
+      "key": "2026-10-16-facebook-1",
+      "state": "failed",
+      "platform": "facebook",
+      "slot": 0,
+      "date": "2026-10-16",
+      "time": "10:00",
+      "started_at": "2026-10-16T04:01:24+06:00",
+      "error": "ERROR: [youtube] U5bnbWTtcwc: The page needs to be reloaded.",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-16T04:04:40+06:00",
+      "source_id": "U5bnbWTtcwc",
+      "source_url": "https://www.youtube.com/watch?v=U5bnbWTtcwc",
+      "source_title": "Ek Kahani | PAGAL DEWANA | Episode 436 | Hindi Show | Crime Alert #dangaltvshow",
+      "source_channel": "https://youtube.com/@crimealert",
+      "source_age_days": 60.3,
+      "source_duration": 2682.0
     }
   },
   "progress": {
