@@ -59,6 +59,11 @@
       "at": "2026-10-16T04:08:05+06:00",
       "level": "error",
       "text": "2026-10-16-facebook-2: ব্যর্থ — ERROR: [youtube] dKLqf0it6R0: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-16T04:09:13+06:00",
+      "level": "info",
+      "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealert/videos) — 300টি"
     }
   ]
 }
