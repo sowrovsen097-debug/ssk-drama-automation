@@ -134,6 +134,11 @@
       "at": "2026-10-16T04:15:47+06:00",
       "level": "warn",
       "text": "YouTube API তালিকা ব্যর্থ (https://youtube.com/@alert100hindiwebseries/videos): YouTube API playlistItems 404: { \"error\": { \"code\": 404, \"message\": \"The playlist identified with the request's \\u003ccode\\u003eplaylistId\\u003c/code\\u003e para"
+    },
+    {
+      "at": "2026-10-16T04:15:48+06:00",
+      "level": "warn",
+      "text": "স্ক্যান সতর্কতা: https://youtube.com/@alert100hindiwebseries: তালিকা খালি"
     }
   ]
 }
