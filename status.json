@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-10-16T04:16:00+06:00",
+  "updated_at": "2026-10-16T04:18:22+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
     "preparing": 1,
-    "failed": 5
+    "failed": 6
   },
   "jobs": {
     "2026-10-15-facebook-1": {
@@ -274,6 +274,45 @@
       "source_channel": "https://youtube.com/@crimealertbharat-u5w",
       "source_age_days": 61.7,
       "source_duration": 2635.0
+    },
+    "2026-10-16-youtube-3": {
+      "key": "2026-10-16-youtube-3",
+      "state": "failed",
+      "platform": "youtube",
+      "slot": 2,
+      "date": "2026-10-16",
+      "time": "22:00",
+      "started_at": "2026-10-16T04:16:01+06:00",
+      "error": "ERROR: [youtube] LSISuFnUu9g: The page needs to be reloaded.",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-16T04:18:17+06:00",
+      "source_id": "LSISuFnUu9g",
+      "source_url": "https://www.youtube.com/watch?v=LSISuFnUu9g",
+      "source_title": "60 साल का बुड्ढा दूल्हा और 20 साल की जवान दुल्हन | True Crime | Crime Alert | New Episode 2026",
+      "source_channel": "https://youtube.com/@crimealertbharat-u5w",
+      "source_age_days": 62.3,
+      "source_duration": 2613.0
     }
   },
   "progress": {
