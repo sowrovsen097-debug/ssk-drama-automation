@@ -191,13 +191,13 @@
   },
   "2026-10-16-youtube-1": {
     "key": "2026-10-16-youtube-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "youtube",
     "slot": 0,
     "date": "2026-10-16",
     "time": "08:00",
     "started_at": "2026-10-16T04:11:28+06:00",
-    "error": null,
+    "error": "ERROR: [youtube] -adBiD0TDMY: The page needs to be reloaded.",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -220,7 +220,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-16T04:13:32+06:00",
+    "updated_at": "2026-10-16T04:13:39+06:00",
     "source_id": "-adBiD0TDMY",
     "source_url": "https://www.youtube.com/watch?v=-adBiD0TDMY",
     "source_title": "क्राइम_पेट्रोल | Crime Patrol 2.0 | New Episode 2026",
