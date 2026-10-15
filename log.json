@@ -119,6 +119,11 @@
       "at": "2026-10-16T04:13:40+06:00",
       "level": "error",
       "text": "2026-10-16-youtube-1: ব্যর্থ — ERROR: [youtube] -adBiD0TDMY: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-16T04:14:43+06:00",
+      "level": "info",
+      "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealertbharat-u5w/videos) — 177টি"
     }
   ]
 }
