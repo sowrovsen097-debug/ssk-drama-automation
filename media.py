@@ -5,6 +5,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -130,19 +131,163 @@ def channel_for_slot(cfg: dict, platform: str, slot: int) -> str:
 
 
 # ------------------------------------------------------------------ yt-dlp
-def scan_channel(url: str, limit: int = 15, cookies: str = "") -> list:
-    import yt_dlp
+# --------------------------------------------------------------- yt-dlp নিরাপদ ইমপোর্ট
+def ensure_ytdlp():
+    """yt-dlp ইনস্টল না থাকলে নিজে ইনস্টল করে ইমপোর্ট করে দেয় (Actions-এ মডিউল মিসিং এরর বন্ধ)।"""
+    try:
+        import yt_dlp
+        return yt_dlp
+    except ImportError:
+        pass
+    for extra in ([], ["--user"]):
+        try:
+            subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--upgrade", "yt-dlp"] + extra,
+                           capture_output=True, text=True, timeout=900)
+        except Exception:
+            continue
+        try:
+            import importlib
+            import yt_dlp
+            importlib.reload(yt_dlp)
+            return yt_dlp
+        except ImportError:
+            continue
+    raise SskError("yt-dlp ইনস্টল করা গেল না — workflow-এর pip ধাপ দেখো")
+
+
+# ---------------------------------------------------------- YouTube Data API (fallback)
+YT_API = "https://www.googleapis.com/youtube/v3"
+
+
+def _api_key() -> str:
+    return env("YOUTUBE_API_KEY") or env("YT_API_KEY")
+
+
+def _api(path: str, params: dict) -> dict:
+    key = _api_key()
+    if not key:
+        raise SskError("YOUTUBE_API_KEY নেই — তালিকা বের করা যাবে না")
+    q = dict(params)
+    q["key"] = key
+    r = requests.get(f"{YT_API}/{path}", params=q, timeout=60)
+    if r.status_code != 200:
+        raise SskError(f"YouTube API {path} {r.status_code}: {clean(r.text, 200)}")
+    return r.json()
+
+
+def iso_seconds(text) -> float:
+    m = re.match(r"P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?", str(text or ""))
+    if not m:
+        return 0.0
+    d, h, mi, s = (float(x) if x else 0.0 for x in m.groups())
+    return d * 86400 + h * 3600 + mi * 60 + s
+
+
+def stamp_epoch(text):
+    if not text:
+        return None
+    try:
+        from datetime import datetime
+        return datetime.fromisoformat(str(text).replace("Z", "+00:00")).timestamp()
+    except Exception:
+        return None
+
+
+def handle_of(url):
+    """channel লিংক থেকে (kind, value) — kind: id | handle | search"""
+    u = str(url or "").strip().rstrip("/")
+    if "/channel/" in u:
+        return "id", u.split("/channel/")[-1].split("/")[0]
+    if "/@" in u:
+        return "handle", u.split("/@")[-1].split("/")[0]
+    if u.startswith("@"):
+        return "handle", u[1:].split("/")[0]
+    if re.fullmatch(r"UC[\w-]{20,}", u):
+        return "id", u
+    return "search", (u.split("/")[-1] or u)
+
+
+def api_channel_entries(url, limit: int = 15) -> list:
+    """YouTube Data API দিয়ে চ্যানেলের সর্বশেষ ভিডিও (duration + তারিখ সহ) — কুকি লাগে না।"""
+    kind, value = handle_of(url)
+    info = {}
+    if kind == "id":
+        info = _api("channels", {"part": "contentDetails,snippet", "id": value})
+    else:
+        if kind == "handle":
+            info = _api("channels", {"part": "contentDetails,snippet", "forHandle": value})
+        if not info.get("items"):
+            info = _api("channels", {"part": "contentDetails,snippet", "forUsername": value})
+        if not info.get("items"):
+            s = _api("search", {"part": "snippet", "type": "channel", "maxResults": 1, "q": value})
+            cid = ((s.get("items") or [{}])[0].get("id", {}) or {}).get("channelId")
+            info = _api("channels", {"part": "contentDetails,snippet", "id": cid}) if cid else {}
+    if not info.get("items"):
+        return []
+    item = info["items"][0]
+    uploads = ((item.get("contentDetails") or {}).get("relatedPlaylists") or {}).get("uploads")
+    if not uploads:
+        return []
+    want = max(1, min(400, int(limit)))
+    ids, stamps, token = [], {}, None
+    while len(ids) < want:
+        params = {"part": "contentDetails,snippet", "playlistId": uploads, "maxResults": 50}
+        if token:
+            params["pageToken"] = token
+        pl = _api("playlistItems", params)
+        for it in pl.get("items") or []:
+            cd = it.get("contentDetails") or {}
+            vid = cd.get("videoId") or ((it.get("snippet") or {}).get("resourceId") or {}).get("videoId")
+            if not vid or vid in stamps:
+                continue
+            ids.append(vid)
+            stamps[vid] = (it.get("snippet") or {}).get("publishedAt")
+        token = pl.get("nextPageToken")
+        if not token:
+            break
+    if not ids:
+        return []
+    out = []
+    for i in range(0, len(ids), 50):
+        vr = _api("videos", {"part": "snippet,contentDetails,statistics",
+                             "id": ",".join(ids[i:i + 50])})
+        for v in vr.get("items") or []:
+            sn, cd, st = v.get("snippet") or {}, v.get("contentDetails") or {}, v.get("statistics") or {}
+            out.append({"id": v.get("id"), "title": sn.get("title") or "",
+                        "duration": iso_seconds(cd.get("duration")),
+                        "timestamp": stamp_epoch(sn.get("publishedAt") or stamps.get(v.get("id"))),
+                        "view_count": int(st.get("viewCount") or 0),
+                        "channel": sn.get("channelTitle") or value})
+    return out
+
+
+def scan_channel(url: str, limit: int = 15, cookies: str = "", deep: int = 0) -> list:
+    """চ্যানেলের ভিডিও তালিকা — আগে yt-dlp, কিছু না পেলে YouTube Data API (কুকি ছাড়া)।"""
     target = str(url).split("?")[0].rstrip("/")
     if not target.endswith("/videos"):
         target += "/videos"
-    opts = {"quiet": True, "no_warnings": True, "skip_download": True, "extract_flat": False,
-            "ignoreerrors": True, "playlistend": int(limit),
-            "extractor_args": {"youtube": {"player_client": ["web_safari", "tv", "web"]}}}
-    if cookies:
-        opts["cookiefile"] = str(write_cookies(cookies, Path(core.WORK) / "cookies.txt"))
-    with yt_dlp.YoutubeDL(opts) as ydl:
-        info = ydl.extract_info(target, download=False)
-    return [e for e in (info.get("entries") or []) if e]
+    entries = []
+    try:
+        yt_dlp = ensure_ytdlp()
+        opts = {"quiet": True, "no_warnings": True, "skip_download": True, "extract_flat": False,
+                "ignoreerrors": True, "playlistend": int(limit),
+                "extractor_args": {"youtube": {"player_client": ["web_safari", "tv", "web"]}}}
+        if cookies:
+            opts["cookiefile"] = str(write_cookies(cookies, Path(core.WORK) / "cookies.txt"))
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(target, download=False)
+        entries = [e for e in ((info or {}).get("entries") or []) if e and e.get("id")]
+    except Exception as exc:
+        core.log(f"yt-dlp তালিকা ব্যর্থ ({target}): {clean(exc, 160)}", "warn")
+        entries = []
+    if not entries:
+        try:
+            entries = api_channel_entries(str(url), int(deep or max(int(limit), 150)))
+            if entries:
+                core.log(f"YouTube API দিয়ে তালিকা পাওয়া গেছে ({target}) — {len(entries)}টি", "info")
+        except Exception as exc:
+            core.log(f"YouTube API তালিকা ব্যর্থ ({target}): {clean(exc, 160)}", "warn")
+    return entries
 
 
 def pick_source(cfg: dict, platform: str, slot: int) -> dict:
@@ -162,7 +307,8 @@ def pick_source(cfg: dict, platform: str, slot: int) -> dict:
     notes, why, picks = [], {"young": 0, "long": 0, "short": 0, "nometa": 0, "used": 0}, []
     for channel in order:
         try:
-            entries = scan_channel(channel, int(cfg.get("metadata_probe_limit", 15)), cookies)
+            entries = scan_channel(channel, int(cfg.get("metadata_probe_limit", 15)), cookies,
+                                  deep=int(cfg.get("api_scan_limit", 300)))
         except Exception as exc:
             notes.append(f"{channel}: {clean(exc, 120)}")
             continue
@@ -206,7 +352,7 @@ def pick_source(cfg: dict, platform: str, slot: int) -> dict:
 
 
 def download_source(source: dict, folder: Path, cfg: dict) -> Path:
-    import yt_dlp
+    yt_dlp = ensure_ytdlp()
     folder.mkdir(parents=True, exist_ok=True)
     opts = {"quiet": True, "no_warnings": True,
             "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
