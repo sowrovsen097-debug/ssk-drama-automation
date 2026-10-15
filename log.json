@@ -34,6 +34,11 @@
       "at": "2026-10-16T04:04:42+06:00",
       "level": "error",
       "text": "2026-10-16-facebook-1: ব্যর্থ — ERROR: [youtube] U5bnbWTtcwc: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-16T04:05:51+06:00",
+      "level": "info",
+      "text": "YouTube API দিয়ে তালিকা পাওয়া গেছে (https://youtube.com/@crimealert_4k/videos) — 300টি"
     }
   ]
 }
