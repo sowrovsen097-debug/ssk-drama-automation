@@ -230,13 +230,13 @@
   },
   "2026-10-16-youtube-2": {
     "key": "2026-10-16-youtube-2",
-    "state": "preparing",
+    "state": "failed",
     "platform": "youtube",
     "slot": 1,
     "date": "2026-10-16",
     "time": "15:00",
     "started_at": "2026-10-16T04:13:44+06:00",
-    "error": null,
+    "error": "ERROR: [youtube] ZgbMxqCRjb4: The page needs to be reloaded.",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -259,7 +259,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-16T04:15:50+06:00",
+    "updated_at": "2026-10-16T04:15:56+06:00",
     "source_id": "ZgbMxqCRjb4",
     "source_url": "https://www.youtube.com/watch?v=ZgbMxqCRjb4",
     "source_title": "नई दुल्हन का ऐसा राज़ खुला कि पूरा परिवार रह गया हैरान!| True Crime | Crime Alert | New Episode 2026",
