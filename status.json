@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-10-16T04:13:43+06:00",
+  "updated_at": "2026-10-16T04:16:00+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
     "preparing": 1,
-    "failed": 4
+    "failed": 5
   },
   "jobs": {
     "2026-10-15-facebook-1": {
@@ -235,6 +235,45 @@
       "source_channel": "https://youtube.com/@apradhkijaanch",
       "source_age_days": 60.3,
       "source_duration": 2598.0
+    },
+    "2026-10-16-youtube-2": {
+      "key": "2026-10-16-youtube-2",
+      "state": "failed",
+      "platform": "youtube",
+      "slot": 1,
+      "date": "2026-10-16",
+      "time": "15:00",
+      "started_at": "2026-10-16T04:13:44+06:00",
+      "error": "ERROR: [youtube] ZgbMxqCRjb4: The page needs to be reloaded.",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-16T04:15:56+06:00",
+      "source_id": "ZgbMxqCRjb4",
+      "source_url": "https://www.youtube.com/watch?v=ZgbMxqCRjb4",
+      "source_title": "नई दुल्हन का ऐसा राज़ खुला कि पूरा परिवार रह गया हैरान!| True Crime | Crime Alert | New Episode 2026",
+      "source_channel": "https://youtube.com/@crimealertbharat-u5w",
+      "source_age_days": 61.7,
+      "source_duration": 2635.0
     }
   },
   "progress": {
