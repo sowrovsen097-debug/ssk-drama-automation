@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-10-16T04:11:25+06:00",
+  "updated_at": "2026-10-16T04:13:43+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
     "preparing": 1,
-    "failed": 3
+    "failed": 4
   },
   "jobs": {
     "2026-10-15-facebook-1": {
@@ -196,6 +196,45 @@
       "source_channel": "https://youtube.com/@admdindiancriminalminds-z6t",
       "source_age_days": 60.4,
       "source_duration": 2918.0
+    },
+    "2026-10-16-youtube-1": {
+      "key": "2026-10-16-youtube-1",
+      "state": "failed",
+      "platform": "youtube",
+      "slot": 0,
+      "date": "2026-10-16",
+      "time": "08:00",
+      "started_at": "2026-10-16T04:11:28+06:00",
+      "error": "ERROR: [youtube] -adBiD0TDMY: The page needs to be reloaded.",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-16T04:13:39+06:00",
+      "source_id": "-adBiD0TDMY",
+      "source_url": "https://www.youtube.com/watch?v=-adBiD0TDMY",
+      "source_title": "क्राइम_पेट्रोल | Crime Patrol 2.0 | New Episode 2026",
+      "source_channel": "https://youtube.com/@apradhkijaanch",
+      "source_age_days": 60.3,
+      "source_duration": 2598.0
     }
   },
   "progress": {
