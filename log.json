@@ -309,6 +309,11 @@
       "at": "2026-10-15T08:37:59+06:00",
       "level": "info",
       "text": "2026-10-15-facebook-1: সোর্স → Ek Kahani | JUNOONI AASHIQ | Episode 441 | Hindi Show | Crim (60.3 দিন পুরোনো)"
+    },
+    {
+      "at": "2026-10-15T08:38:04+06:00",
+      "level": "error",
+      "text": "2026-10-15-facebook-1: ব্যর্থ — ERROR: [youtube] TtuRKmVKAKk: The page needs to be reloaded."
     }
   ]
 }
