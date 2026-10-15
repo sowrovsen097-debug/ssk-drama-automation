@@ -1,4 +1,4 @@
-requests>=2.32
-yt-dlp
+Requests>=2.32
+yt-dlp[default]
 openai-whisper
 setuptools
