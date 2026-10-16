@@ -20,6 +20,8 @@ from pathlib import Path
 
 KEEP_STATES = {"ready", "uploading", "done"}
 DROP_STATES = {"failed", "cancelled"}
+STALE_STATE = "preparing"
+STALE_HOURS = 3
 BD = dt.timezone(dt.timedelta(hours=6))
 
 try:                      # Actions-এ core থাকে; লোকাল টেস্টে না থাকলেও চলে
@@ -65,9 +67,6 @@ def save(name: str, data, message: str, dry_run: bool = False) -> str:
         except Exception as exc:
             print(f"  ! core.write_json ব্যর্থ ({exc}) — git দিয়ে চেষ্টা করা হচ্ছে")
     for cmd in (["git", "add", name],
-                ["git", "-c", "user.name=SSK clean", "git", ]):
-        pass
-    for cmd in (["git", "add", name],
                 ["git", "-c", "user.name=SSK clean", "-c", "user.email=ssk@local",
                  "commit", "-m", message],
                 ["git", "push"]):
@@ -88,7 +87,29 @@ def job_date(key, job) -> str:
     return k if len(k) == 10 and k[4] == "-" else ""
 
 
-def prune(jobs: dict, cutoff: str, wipe_all: bool = False):
+def stuck(job: dict, hours: int = STALE_HOURS) -> bool:
+    """'preparing' অবস্থায় আটকে থাকা পুরোনো রেকর্ড কি না (টাইমআউটে রান মরে গেলে এটাই থাকে)।"""
+    stamp = (job or {}).get("updated_at") or (job or {}).get("started_at") or (job or {}).get("at")
+    ts = None
+    if stamp:
+        try:
+            ts = dt.datetime.fromisoformat(str(stamp))
+        except Exception:
+            ts = None
+    if ts is None:
+        d = job_date("", job)
+        if not d:
+            return True
+        try:
+            ts = dt.datetime.fromisoformat(d + "T00:00:00+06:00")
+        except Exception:
+            return True
+    if ts.tzinfo is None:
+        ts = ts.replace(tzinfo=BD)
+    return (bd_now() - ts).total_seconds() > max(1, hours) * 3600
+
+
+def prune(jobs: dict, cutoff: str, wipe_all: bool = False, hours: int = STALE_HOURS):
     """(রাখা, ব্যর্থ-বাতিল, পুরোনো pending) — ready/done কখনো ছোঁয় না।"""
     keep, bad, old = {}, [], []
     for key, job in (jobs or {}).items():
@@ -100,6 +121,12 @@ def prune(jobs: dict, cutoff: str, wipe_all: bool = False):
         state = str(job.get("state") or "")
         if state in DROP_STATES:
             bad.append(key)
+            continue
+        if state == STALE_STATE:
+            if stuck(job, hours):
+                old.append(key)
+                continue
+            keep[key] = job
             continue
         if state in KEEP_STATES:
             keep[key] = job
@@ -124,6 +151,8 @@ def main() -> int:
                     help="০ = শুধু আজকের কাজ থাকবে; ১ = গতকালও থাকবে")
     ap.add_argument("--wipe-all", action="store_true", help="সব কাজের রেকর্ড মুছে একদম নতুন")
     ap.add_argument("--purge-history", action="store_true", help="history.json-ও খালি করে")
+    ap.add_argument("--stale-hours", type=int, default=STALE_HOURS,
+                    help="'preparing' কত ঘণ্টা আটকে থাকলে বাসি বলে গণ্য হবে")
     ap.add_argument("--dry-run", action="store_true", help="কিছু না লিখে শুধু দেখায়")
     a = ap.parse_args()
 
@@ -136,10 +165,10 @@ def main() -> int:
     wrapped = isinstance(queue, dict) and isinstance(queue.get("jobs"), dict)
     jobs = (queue.get("jobs") if wrapped else queue) or {}
     before = counts(jobs)
-    keep, bad, old = prune(jobs, cutoff, a.wipe_all)
+    keep, bad, old = prune(jobs, cutoff, a.wipe_all, a.stale_hours)
     print(f"queue.json: আগে {len(jobs)}টি কাজ {before} → এখন {len(keep)}টি {counts(keep)}")
     print(f"  মুছে ফেলা — ব্যর্থ/বাতিল {len(bad)}টি: {bad[:14]}")
-    print(f"  মুছে ফেলা — পুরোনো pending {len(old)}টি: {old[:14]}")
+    print(f"  মুছে ফেলা — পুরোনো/আটকে-থাকা {len(old)}টি: {old[:14]}")
     if not a.dry_run:
         if wrapped:
             queue["jobs"] = keep
@@ -152,7 +181,7 @@ def main() -> int:
     status = load("status.json", {})
     if isinstance(status, dict) and isinstance(status.get("jobs"), dict):
         sjobs = status["jobs"]
-        skeep = prune(sjobs, cutoff, a.wipe_all)[0]
+        skeep = prune(sjobs, cutoff, a.wipe_all, a.stale_hours)[0]
         status["jobs"] = skeep
         status["counts"] = {**{"pending": 0, "ready": 0, "done": 0, "failed": 0}, **counts(skeep)}
         status["cleaned_at"] = bd_stamp()
@@ -181,7 +210,7 @@ def main() -> int:
 
     dropped = len(bad) + len(old)
     msg = (f"🧹 SSK DRAMA পরিষ্কার: {dropped}টি পুরোনো/ব্যর্থ কাজের রেকর্ড মুছে ফেলা হলো "
-           f"(ব্যর্থ/বাতিল {len(bad)}, পুরোনো pending {len(old)})। এখন {len(keep)}টি কাজ বাকি।")
+           f"(ব্যর্থ/বাতিল {len(bad)}, পুরোনো/আটকে-থাকা {len(old)})। এখন {len(keep)}টি কাজ বাকি।")
     print("\n" + msg)
     if core is not None and not a.dry_run:
         try:
