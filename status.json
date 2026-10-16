@@ -1,8 +1,50 @@
 {
-  "updated_at": "2026-10-16T09:47:36+06:00",
+  "updated_at": "2026-10-16T10:02:22+06:00",
   "paused": false,
-  "counts": {},
-  "jobs": {},
+  "counts": {
+    "failed": 1
+  },
+  "jobs": {
+    "2026-10-16-facebook-1": {
+      "key": "2026-10-16-facebook-1",
+      "state": "failed",
+      "platform": "facebook",
+      "slot": 0,
+      "date": "2026-10-16",
+      "time": "10:00",
+      "started_at": "2026-10-16T10:01:47+06:00",
+      "error": "ডাউনলোড কোনো ক্লায়েন্টেই হয়নি — YT_COOKIES নতুন করে নাও: default,web: ERROR: [youtube] dKLqf0it6R0: The page needs to be reloaded. | web,mweb: ERROR: [youtube] dKLqf0it6R0: Requested format is not available. Use --list-formats for a list of available formats | tv_embedded,android,ios: ERROR: [youtube] dKLqf0it6R0: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for t",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-16T10:02:19+06:00",
+      "source_id": "dKLqf0it6R0",
+      "source_url": "https://www.youtube.com/watch?v=dKLqf0it6R0",
+      "source_title": "शादी का वादा करके नीति को बना रहा था बेवकूफ! | Crime Alert 4K | Full Episode | Dangal 2#crimestory",
+      "source_channel": "https://youtube.com/@crimealert_4k",
+      "source_age_days": 60.5,
+      "source_duration": 2806.0
+    }
+  },
   "progress": {
     "stage": "প্রস্তুত — নতুন করে শুরুর অপেক্ষায়",
     "updated_at": "2026-10-16T07:03:57+06:00",
