@@ -199,6 +199,11 @@
       "at": "2026-10-16T10:02:08+06:00",
       "level": "info",
       "text": "2026-10-16-facebook-1: সোর্স → शादी का वादा करके नीति को बना रहा था बेवकूफ! | Crime Alert 4 (60.5 দিন পুরোনো)"
+    },
+    {
+      "at": "2026-10-16T10:02:12+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 1/3 ব্যর্থ (default,web): ERROR: [youtube] dKLqf0it6R0: The page needs to be reloaded."
     }
   ]
 }
