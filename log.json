@@ -249,6 +249,11 @@
       "at": "2026-10-16T15:19:40+06:00",
       "level": "info",
       "text": "2026-10-16-facebook-1: সোর্স → Ek Kahani | PATI PATNI KA PYAR | Episode 720 | Hindi Show | (60.0 দিন পুরোনো)"
+    },
+    {
+      "at": "2026-10-16T15:19:44+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 1/3 ব্যর্থ (default,web): ERROR: [youtube] dBT6eo7M0gc: The page needs to be reloaded."
     }
   ]
 }
