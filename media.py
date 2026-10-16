@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -262,31 +263,35 @@ def api_channel_entries(url, limit: int = 15) -> list:
 
 
 def scan_channel(url: str, limit: int = 15, cookies: str = "", deep: int = 0) -> list:
-    """চ্যানেলের ভিডিও তালিকা — আগে yt-dlp, কিছু না পেলে YouTube Data API (কুকি ছাড়া)।"""
+    """চ্যানেলের ভিডিও তালিকা — প্রথমে YouTube Data API (দ্রুত, কুকি লাগে না), না পেলে yt-dlp।
+
+    আগে উল্টো ছিল: yt-dlp আগে চেষ্টা করত, আর ক্রেডেনশিয়াল পুরোনো হলে প্রতিটি চ্যানেলে
+    মিনিটের পর মিনিট আটকে থাকত — এই দীর্ঘ অপেক্ষাই "preparing" হয়ে ঘণ্টা পার করে দিত।
+    """
     target = str(url).split("?")[0].rstrip("/")
     if not target.endswith("/videos"):
         target += "/videos"
     entries = []
     try:
-        yt_dlp = ensure_ytdlp()
-        opts = {"quiet": True, "no_warnings": True, "skip_download": True, "extract_flat": False,
-                "ignoreerrors": True, "playlistend": int(limit),
-                "extractor_args": {"youtube": {"player_client": ["web_safari", "tv", "web"]}}}
-        if cookies:
-            opts["cookiefile"] = str(write_cookies(cookies, Path(core.WORK) / "cookies.txt"))
-        with yt_dlp.YoutubeDL(opts) as ydl:
-            info = ydl.extract_info(target, download=False)
-        entries = [e for e in ((info or {}).get("entries") or []) if e and e.get("id")]
+        entries = api_channel_entries(str(url), int(deep or max(int(limit), 150)))
+        if entries:
+            core.log(f"YouTube API দিয়ে তালিকা ({target}) — {len(entries)}টি")
     except Exception as exc:
-        core.log(f"yt-dlp তালিকা ব্যর্থ ({target}): {clean(exc, 160)}", "warn")
-        entries = []
+        core.log(f"YouTube API তালিকা ব্যর্থ ({target}): {clean(exc, 160)}", "warn")
     if not entries:
         try:
-            entries = api_channel_entries(str(url), int(deep or max(int(limit), 150)))
-            if entries:
-                core.log(f"YouTube API দিয়ে তালিকা পাওয়া গেছে ({target}) — {len(entries)}টি", "info")
+            yt_dlp = ensure_ytdlp()
+            opts = {"quiet": True, "no_warnings": True, "skip_download": True, "extract_flat": False,
+                    "ignoreerrors": True, "playlistend": int(limit), "socket_timeout": 20,
+                    "extractor_args": {"youtube": {"player_client": ["default", "web"]}}}
+            if cookies:
+                opts["cookiefile"] = str(write_cookies(cookies, Path(core.WORK) / "cookies.txt"))
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info(target, download=False)
+            entries = [e for e in ((info or {}).get("entries") or []) if e and e.get("id")]
         except Exception as exc:
-            core.log(f"YouTube API তালিকা ব্যর্থ ({target}): {clean(exc, 160)}", "warn")
+            core.log(f"yt-dlp তালিকা ব্যর্থ ({target}): {clean(exc, 160)}", "warn")
+            entries = []
     return entries
 
 
@@ -352,26 +357,48 @@ def pick_source(cfg: dict, platform: str, slot: int) -> dict:
 
 
 def download_source(source: dict, folder: Path, cfg: dict) -> Path:
+    """ডাউনলোড — তিন ধাপের ক্লায়েন্ট লেডার।
+
+    "The page needs to be reloaded." মানে ইউটিউব ওই ক্লায়েন্ট-কুকি জোড়া ফিরিয়ে দিচ্ছে।
+    আগে এক জোড়া দিয়েই retries=5 করে ঘণ্টার পর ঘণ্টা নষ্ট হত; এখন ব্যর্থ হলে দ্রুত
+    পরের ক্লায়েন্টে যায়, শেষ ধাপে কুকি ছাড়াই চেষ্টা করে।
+    """
     yt_dlp = ensure_ytdlp()
     folder.mkdir(parents=True, exist_ok=True)
-    opts = {"quiet": True, "no_warnings": True,
-            "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
-            "merge_output_format": "mp4", "outtmpl": str(folder / "source.%(ext)s"),
-            "retries": 5, "fragment_retries": 5, "concurrent_fragment_downloads": 4,
-            "extractor_args": {"youtube": {"player_client": ["web_safari", "tv", "web"]}}}
     cookies = env("YT_COOKIES")
-    if cookies:
-        opts["cookiefile"] = str(write_cookies(cookies, folder / "cookies.txt"))
-    with yt_dlp.YoutubeDL(opts) as ydl:
-        info = ydl.extract_info(source["url"], download=True)
-        guessed = Path(ydl.prepare_filename(info))
-    path = next((p for p in sorted(folder.glob("source.*"))
-                 if p.suffix.lower() in (".mp4", ".mkv", ".webm")), guessed)
-    if path.suffix.lower() != ".mp4":
-        out = folder / "source.mp4"
-        run([FFMPEG, "-y", "-i", str(path), "-c", "copy", str(out)], timeout=5400)
-        path = out
-    return path
+    cookie_file = str(write_cookies(cookies, folder / "cookies.txt")) if cookies else None
+    ladders = [["default", "web"], ["web", "mweb"], ["tv_embedded", "android", "ios"]]
+    errors = []
+    for i, clients in enumerate(ladders):
+        target = folder / f"try-{i}"
+        target.mkdir(parents=True, exist_ok=True)
+        opts = {"quiet": True, "no_warnings": True, "ignoreerrors": False, "socket_timeout": 30,
+                "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
+                "merge_output_format": "mp4", "outtmpl": str(target / "source.%(ext)s"),
+                "retries": 2, "fragment_retries": 2, "concurrent_fragment_downloads": 4,
+                "extractor_args": {"youtube": {"player_client": clients}}}
+        if cookie_file and i < 2:          # শেষ ধাপে কুকি ছাড়াই চেষ্টা
+            opts["cookiefile"] = cookie_file
+        try:
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info(source["url"], download=True)
+                guessed = Path(ydl.prepare_filename(info))
+            path = next((q for q in sorted(target.glob("source.*"))
+                         if q.suffix.lower() in (".mp4", ".mkv", ".webm")), guessed)
+            if path.suffix.lower() != ".mp4":
+                mp4 = target / "source.mp4"
+                run([FFMPEG, "-y", "-i", str(path), "-c", "copy", str(mp4)], timeout=5400)
+                path = mp4
+            final = folder / "source.mp4"
+            if path.resolve() != final.resolve():
+                shutil.copy2(path, final)
+            core.log(f"ডাউনলোড ঠিক হয়েছে (ক্লায়েন্ট {','.join(clients)})")
+            return final
+        except Exception as exc:
+            msg = clean(exc, 200)
+            errors.append(f"{','.join(clients)}: {msg}")
+            core.log(f"ডাউনলোড চেষ্টা {i + 1}/3 ব্যর্থ ({','.join(clients)}): {msg}", "warn")
+    raise SskError("ডাউনলোড কোনো ক্লায়েন্টেই হয়নি — YT_COOKIES নতুন করে নাও: " + " | ".join(errors[:3]))
 
 
 # ------------------------------------------------------------------ editing
