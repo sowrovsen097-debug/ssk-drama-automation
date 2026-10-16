@@ -179,6 +179,11 @@
       "at": "2026-10-16T04:18:20+06:00",
       "level": "error",
       "text": "2026-10-16-youtube-3: ব্যর্থ — ERROR: [youtube] LSISuFnUu9g: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-16T10:01:52+06:00",
+      "level": "info",
+      "text": "YouTube API দিয়ে তালিকা (https://youtube.com/@admdindiancriminalminds-z6t/videos) — 300টি"
     }
   ]
 }
