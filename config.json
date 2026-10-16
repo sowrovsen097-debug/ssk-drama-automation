@@ -1,51 +1,163 @@
-{
-  "paused": false,
-  "facebook_channels": [
-    "https://youtube.com/@admdindiancriminalminds-z6t",
-    "https://youtube.com/@crimealert_4k",
-    "https://youtube.com/@crimealert"
-  ],
-  "youtube_channels": [
-    "https://youtube.com/@apradhkijaanch",
-    "https://youtube.com/@crimealertbharat-u5w",
-    "https://youtube.com/@alert100hindiwebseries"
-  ],
-  "facebook_times_bd": [
-    "10:00",
-    "15:00",
-    "20:00"
-  ],
-  "youtube_times_bd": [
-    "08:00",
-    "15:00",
-    "22:00"
-  ],
-  "edit_window_bd": [
-    "01:00",
-    "06:00"
-  ],
-  "min_lead_hours": 6,
-  "day_filter": 60,
-  "allow_any_age": false,
-  "keep_ratio": 0.8125,
-  "max_duration_minutes": 80,
-  "min_duration_seconds": 60,
-  "trim_long_sources": true,
-  "metadata_probe_limit": 20,
-  "api_scan_limit": 300,
-  "source_scan_limit": 40,
-  "whisper_model": "base",
-  "gemini_model": "gemini-3.1-flash-lite",
-  "micro_speed": 1.03,
-  "pitch_ratio": 1.022,
-  "music_enabled": true,
-  "music_query": "cinematic ambient instrumental",
-  "drive_buffer_folder": "SSK DRAMA BUFFER",
-  "storage_retention_days": 3,
-  "facebook_graph_version": "v26.0",
-  "facebook_page_id": "me",
-  "youtube_privacy": "public",
-  "telegram_updates_enabled": true,
-  "bot_worker_url": "https://sskdrama.kokoksen780.workers.dev",
-  "theme": "sunset"
-}
+name: SSK Upload & Observe
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"     # প্রতি ১০ মিনিটে: সময় হওয়া ভিডিও আপলোড
+    - cron: "*/20 * * * *"     # প্রতি ২০ মিনিটে: স্টেটাস, বট কমান্ড, চ্যাট উত্তর, ক্লিনআপ
+  repository_dispatch:
+    types: [ssk]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "কী চালাবে"
+        type: choice
+        options:
+          - service
+          - upload
+          - scan
+          - prepare
+          - clean
+        default: service
+      force:
+        description: "এডিট উইন্ডো না মেনে এখনই এডিট (prepare-এর জন্য 1)"
+        type: string
+        default: "0"
+      keep_days:
+        description: "clean: কত দিনের কাজ রাখবে (0 = শুধু আজকের)"
+        type: string
+        default: "0"
+      wipe_all:
+        description: "clean: সব কাজ মুছে একদম নতুন (1 = হ্যাঁ)"
+        type: string
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssk-service
+  cancel-in-progress: false
+
+env:
+  APP_BRANCH: main
+  APP_TOKEN: ${{ github.token }}
+  APP_REPOSITORY: ${{ github.repository }}
+  APP_WORK: work
+  FB_ACCESS_TOKEN: ${{ secrets.FB_ACCESS_TOKEN }}
+  FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+  FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+  GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+  YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+  YT_COOKIES: ${{ secrets.YT_COOKIES }}
+
+jobs:
+  # ১) আপলোড — সময় হওয়া (রেডি) ভিডিও Drive থেকে এনে প্ল্যাটফর্মে দেয়
+  upload:
+    if: >-
+      github.event.schedule == '*/10 * * * *' ||
+      github.event.client_payload.mode == 'upload' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'upload')
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    env:
+      APP_MODE: upload
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade -r requirements.txt
+      - run: python main.py
+
+  # ২) স্ক্যান — কোন চ্যানেলে কী পাওয়া যাচ্ছে (কুকি ঠিক আছে কি না বোঝার সহজ উপায়)
+  scan:
+    if: >-
+      github.event.client_payload.mode == 'scan' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'scan')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade -r requirements.txt
+      - run: python main.py --scan
+
+  # ৩) এখনই এডিট — উইন্ডো না মেনে সরাসরি প্রস্তুতি
+  prepare:
+    if: >-
+      github.event.client_payload.mode == 'prepare' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'prepare')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      APP_MODE: prepare
+      APP_FORCE: ${{ github.event.client_payload.force || inputs.force || '1' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-noto-extra
+          python -m pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install --upgrade -r requirements.txt
+      - run: python main.py
+
+  # ৪) মনিটর — স্টেটাস লেখা, বট কমান্ড (retry/cancel/cleanup), চ্যাটের উত্তর, স্টোরেজ পরিষ্কার
+  observe:
+    if: >-
+      github.event.schedule == '*/20 * * * *' ||
+      github.event.client_payload.mode == 'service' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'service')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      APP_MODE: service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade -r requirements.txt
+      - run: python main.py
+
+  # ৫) পরিষ্কার — পুরোনো/ব্যর্থ কাজের হিস্ট্রি মুছে অ্যাপ নতুনের মতো করে
+  clean:
+    if: >-
+      github.event.client_payload.mode == 'clean' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'clean')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install requests
+      - run: |
+          KEEP="${{ github.event.client_payload.keep_days || inputs.keep_days || '0' }}"
+          WIPE="${{ github.event.client_payload.wipe_all || inputs.wipe_all || '0' }}"
+          ARGS="--keep-days $KEEP"
+          if [ "$WIPE" = "1" ]; then ARGS="$ARGS --wipe-all"; fi
+          python clean.py $ARGS
