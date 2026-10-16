@@ -259,6 +259,11 @@
       "at": "2026-10-16T15:19:48+06:00",
       "level": "warn",
       "text": "ডাউনলোড চেষ্টা 2/3 ব্যর্থ (web,mweb): ERROR: [youtube] dBT6eo7M0gc: Requested format is not available. Use --list-formats for a list of available formats"
+    },
+    {
+      "at": "2026-10-16T15:19:50+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 3/3 ব্যর্থ (tv_embedded,android,ios): ERROR: [youtube] dBT6eo7M0gc: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-t"
     }
   ]
 }
