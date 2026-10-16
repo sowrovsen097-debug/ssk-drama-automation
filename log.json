@@ -314,6 +314,11 @@
       "at": "2026-10-17T03:59:31+06:00",
       "level": "error",
       "text": "2026-10-17-facebook-1: ব্যর্থ — ডাউনলোড কোনো ক্লায়েন্টেই হয়নি — YT_COOKIES নতুন করে নাও: default,web: ERROR: [youtube] lmHK0qL3tWY: The page needs to be reloaded. | web,mweb: ERROR: [youtube] lmHK0qL3tWY: Requested format is not available. Use --list-formats for a list of available formats | tv_embedded,android,ios: ERROR: [youtube] lmHK0qL3tWY: Sign in to confirm you’re not a bot. Use --cookies"
+    },
+    {
+      "at": "2026-10-17T03:59:36+06:00",
+      "level": "info",
+      "text": "এই রানে 1টি স্লট হবে, বাকিটা পরের রানে (৩৫০ মিনিটের সীমা বাঁচাতে)"
     }
   ]
 }
