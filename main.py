@@ -7,7 +7,6 @@ APP_MODE: prepare | upload | service | manual
 from __future__ import annotations
 
 import json
-import os
 import shutil
 import sys
 from pathlib import Path
@@ -75,7 +74,7 @@ def prepare_slot(cfg: dict, slot: dict, date: str) -> dict:
         info = media.probe(path)
         core.log(f"{key}: ডাউনলোড শেষ — {info['duration'] / 60:.1f} মিনিট, "
                  f"{info['size'] / 1048576:.0f} MB")
-        core.write_json("progress.json", {"stage": "ตัดต่อ (scene trim)", "job": key,
+        core.write_json("progress.json", {"stage": "কাটছাঁট (scene trim)", "job": key,
                                           "updated_at": core.bd_stamp()}, "SSK progress")
 
         cuts = media.scene_cuts(path)
@@ -147,6 +146,13 @@ def prepare_cycle(cfg: dict, force: bool = False) -> dict:
         return {"skipped": f"এডিট উইন্ডোর বাইরে (এখন {core.bd_hm()} BD)"}
     date = core.bd_now().strftime("%Y-%m-%d")
     results, done_keys = [], {k for k, v in core.jobs().items() if v.get("state") == "ready"}
+    for st_key, st_job in list(core.jobs().items()):
+        if isinstance(st_job, dict) and st_job.get("state") == "preparing":
+            core.set_job(st_key, {"state": "failed",
+                                  "error": "আগের রান মাঝপথে থেমেছিল (timeout/বাতিল) — আবার চালানো হবে"})
+            core.log(f"{st_key}: পুরোনো 'preparing' রেকর্ড পরিষ্কার করা হলো", "warn")
+    budget = max(1, int(cfg.get("slots_per_run", 1)))
+    started = 0
     for slot in slots(cfg):
         key = slot_key(slot["platform"], date, slot["slot"])
         if key in done_keys:
@@ -155,7 +161,11 @@ def prepare_cycle(cfg: dict, force: bool = False) -> dict:
         ok, note = core.lead_check(cfg, slot["time"])
         if not ok:
             core.log(f"{key}: {note}", "warn")
+        if started >= budget:
+            core.log(f"এই রানে {budget}টি স্লট হবে, বাকিটা পরের রানে (৩৫০ মিনিটের সীমা বাঁচাতে)")
+            break
         results.append(prepare_slot(cfg, slot, date))
+        started += 1
         core.write_status(cfg)
     core.write_json("progress.json", {"stage": "রাতের এডিটিং শেষ", "updated_at": core.bd_stamp()},
                     "SSK progress")
@@ -222,7 +232,11 @@ def upload_cycle(cfg: dict) -> dict:
 
 # ------------------------------------------------------------------ service
 def cleanup(cfg: dict) -> int:
-    keep = int(cfg.get("storage_retention_days", 3))
+    """নিরাপত্তা-জাল: আপলোড হয়ে গেলেও Drive-এ পড়ে থাকা ফাইল মুছে দেয়।
+
+    upload_slot আপলোডের সাথে সাথেই ফাইল মোছে; এখানে শুধু কোনো কারণে পড়ে থাকা
+    ফাইল ধরা হয়। Drive-এ ১৫ GB কোটা, তাই দেরি না করে মোছাই নিরাপদ।
+    """
     removed = 0
     for job_key, job in core.jobs().items():
         if job.get("state") == "done" and job.get("drive_file_id"):
