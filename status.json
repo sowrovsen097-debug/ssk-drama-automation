@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-16T14:32:54+06:00",
+  "updated_at": "2026-10-16T15:19:56+06:00",
   "paused": false,
   "counts": {
     "failed": 1
@@ -12,8 +12,8 @@
       "slot": 0,
       "date": "2026-10-16",
       "time": "10:00",
-      "started_at": "2026-10-16T10:01:47+06:00",
-      "error": "ডাউনলোড কোনো ক্লায়েন্টেই হয়নি — YT_COOKIES নতুন করে নাও: default,web: ERROR: [youtube] dKLqf0it6R0: The page needs to be reloaded. | web,mweb: ERROR: [youtube] dKLqf0it6R0: Requested format is not available. Use --list-formats for a list of available formats | tv_embedded,android,ios: ERROR: [youtube] dKLqf0it6R0: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for t",
+      "started_at": "2026-10-16T15:19:22+06:00",
+      "error": "ডাউনলোড কোনো ক্লায়েন্টেই হয়নি — YT_COOKIES নতুন করে নাও: default,web: ERROR: [youtube] dBT6eo7M0gc: The page needs to be reloaded. | web,mweb: ERROR: [youtube] dBT6eo7M0gc: Requested format is not available. Use --list-formats for a list of available formats | tv_embedded,android,ios: ERROR: [youtube] dBT6eo7M0gc: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for t",
       "edits": [
         "aspect_fit",
         "mirror",
@@ -36,13 +36,13 @@
         "crop_edges",
         "audio_fade"
       ],
-      "updated_at": "2026-10-16T10:02:19+06:00",
-      "source_id": "dKLqf0it6R0",
-      "source_url": "https://www.youtube.com/watch?v=dKLqf0it6R0",
-      "source_title": "शादी का वादा करके नीति को बना रहा था बेवकूफ! | Crime Alert 4K | Full Episode | Dangal 2#crimestory",
-      "source_channel": "https://youtube.com/@crimealert_4k",
-      "source_age_days": 60.5,
-      "source_duration": 2806.0
+      "updated_at": "2026-10-16T15:19:52+06:00",
+      "source_id": "dBT6eo7M0gc",
+      "source_url": "https://www.youtube.com/watch?v=dBT6eo7M0gc",
+      "source_title": "Ek Kahani | PATI PATNI KA PYAR | Episode 720 | Hindi Show | Crime Alert #dangaltvshow",
+      "source_channel": "https://youtube.com/@crimealert",
+      "source_age_days": 60.0,
+      "source_duration": 2650.0
     }
   },
   "progress": {
