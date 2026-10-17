@@ -40,12 +40,12 @@
   },
   "2026-10-17-facebook-1": {
     "key": "2026-10-17-facebook-1",
-    "state": "pending",
+    "state": "preparing",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-17",
     "time": "10:00",
-    "started_at": "2026-10-17T03:58:55+06:00",
+    "started_at": "2026-10-17T08:58:13+06:00",
     "error": null,
     "edits": [
       "aspect_fit",
@@ -69,7 +69,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-17T08:52:01+06:00",
+    "updated_at": "2026-10-17T08:58:13+06:00",
     "source_id": "lmHK0qL3tWY",
     "source_url": "https://www.youtube.com/watch?v=lmHK0qL3tWY",
     "source_title": "Ek Kahani | BARTAN WAALI CHORNIYAN | Episode 721 | Hindi Show | Crime Alert #dangaltvshow",
