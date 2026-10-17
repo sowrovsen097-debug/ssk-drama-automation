@@ -40,13 +40,13 @@
   },
   "2026-10-17-facebook-1": {
     "key": "2026-10-17-facebook-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-17",
     "time": "10:00",
     "started_at": "2026-10-17T08:58:13+06:00",
-    "error": null,
+    "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] RotqY7BjHX4: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -69,7 +69,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-17T08:58:30+06:00",
+    "updated_at": "2026-10-17T08:58:54+06:00",
     "source_id": "RotqY7BjHX4",
     "source_url": "https://www.youtube.com/watch?v=RotqY7BjHX4",
     "source_title": "एक रात ने बदल दी पूरी जिंदगी! 😱| Crime Alert 4K | Full Episode | Dangal 2#crimestory",
