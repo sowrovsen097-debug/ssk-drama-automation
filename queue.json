@@ -80,13 +80,13 @@
   },
   "2026-10-18-facebook-1": {
     "key": "2026-10-18-facebook-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-18",
     "time": "10:00",
     "started_at": "2026-10-18T05:51:35+06:00",
-    "error": null,
+    "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] 34dpNKa-AoQ: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -109,7 +109,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-18T05:51:51+06:00",
+    "updated_at": "2026-10-18T05:52:15+06:00",
     "source_id": "34dpNKa-AoQ",
     "source_url": "https://www.youtube.com/watch?v=34dpNKa-AoQ",
     "source_title": "Ek Kahani | BAHU BANI NAGIN | Episode 723 | Hindi Show | Crime Alert #dangaltvshow",
