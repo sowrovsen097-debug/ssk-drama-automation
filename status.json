@@ -1,8 +1,9 @@
 {
-  "updated_at": "2026-10-17T08:52:07+06:00",
+  "updated_at": "2026-10-17T08:58:57+06:00",
   "paused": false,
   "counts": {
-    "pending": 2
+    "pending": 1,
+    "failed": 1
   },
   "jobs": {
     "2026-10-16-facebook-1": {
@@ -46,13 +47,13 @@
     },
     "2026-10-17-facebook-1": {
       "key": "2026-10-17-facebook-1",
-      "state": "pending",
+      "state": "failed",
       "platform": "facebook",
       "slot": 0,
       "date": "2026-10-17",
       "time": "10:00",
-      "started_at": "2026-10-17T03:58:55+06:00",
-      "error": null,
+      "started_at": "2026-10-17T08:58:13+06:00",
+      "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] RotqY7BjHX4: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
       "edits": [
         "aspect_fit",
         "mirror",
@@ -75,13 +76,13 @@
         "crop_edges",
         "audio_fade"
       ],
-      "updated_at": "2026-10-17T08:52:01+06:00",
-      "source_id": "lmHK0qL3tWY",
-      "source_url": "https://www.youtube.com/watch?v=lmHK0qL3tWY",
-      "source_title": "Ek Kahani | BARTAN WAALI CHORNIYAN | Episode 721 | Hindi Show | Crime Alert #dangaltvshow",
-      "source_channel": "https://youtube.com/@crimealert",
-      "source_age_days": 60.3,
-      "source_duration": 2649,
+      "updated_at": "2026-10-17T08:58:54+06:00",
+      "source_id": "RotqY7BjHX4",
+      "source_url": "https://www.youtube.com/watch?v=RotqY7BjHX4",
+      "source_title": "एक रात ने बदल दी पूरी जिंदगी! 😱| Crime Alert 4K | Full Episode | Dangal 2#crimestory",
+      "source_channel": "https://youtube.com/@crimealert_4k",
+      "source_age_days": 60.5,
+      "source_duration": 2679.0,
       "retry_at": "2026-10-17T08:52:01+06:00"
     }
   },
