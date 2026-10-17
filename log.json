@@ -424,6 +424,11 @@
       "at": "2026-10-18T03:20:48+06:00",
       "level": "warn",
       "text": "ডাউনলোড চেষ্টা 3/4 ব্যর্থ (কুকি + web_safari) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] UzJwuSSrofw: Requested format is not available. Use --list-formats for a list of available formats"
+    },
+    {
+      "at": "2026-10-18T03:20:50+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 4/4 ব্যর্থ (কুকি ছাড়া) — ইউটিউব বট-চেক — ডেটাসেন্টার আইপি থেকে কুকি ছাড়া সম্ভব নয়: ERROR: [youtube] UzJwuSSrofw: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-t"
     }
   ]
 }
