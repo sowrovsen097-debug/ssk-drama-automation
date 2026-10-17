@@ -69,12 +69,13 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-17T03:59:30+06:00",
+    "updated_at": "2026-10-17T08:52:01+06:00",
     "source_id": "lmHK0qL3tWY",
     "source_url": "https://www.youtube.com/watch?v=lmHK0qL3tWY",
     "source_title": "Ek Kahani | BARTAN WAALI CHORNIYAN | Episode 721 | Hindi Show | Crime Alert #dangaltvshow",
     "source_channel": "https://youtube.com/@crimealert",
     "source_age_days": 60.3,
-    "source_duration": 2649
+    "source_duration": 2649,
+    "retry_at": "2026-10-17T08:52:01+06:00"
   }
 }
