@@ -1,4 +1,10 @@
-"""SSK DRAMA media — yt-dlp স্ক্যান/ডাউনলোড, ffmpeg এডিট, রঙিন karaoke সাবটাইটেল."""
+"""SSK DRAMA media — YouTube স্ক্যান (API + yt-dlp), কুকি যাচাই, ডাউনলোড, ffmpeg এডিট, রঙিন karaoke সাবটাইটেল।
+
+১৭-১০-২০২৬-এর মূল পাঠ: কুকি মরে গেলে ইউটিউব ভিডিও ঠিক থাকা সত্ত্বেও
+"The page needs to be reloaded." / "Requested format is not available." দেয়।
+তাই এখন ডাউনলোডের আগেই কুকি যাচাই হয় (কন্ট্রোল ভিডিও দিয়ে), আর চার ধাপের
+ক্লায়েন্ট লেডারে দ্রুত এগোনো হয়। PO-টোকেন স্ক্রিপ্ট থাকলে সেটাও ব্যবহার হয়।
+"""
 from __future__ import annotations
 
 import json
@@ -27,8 +33,27 @@ EDITS = ["aspect_fit", "mirror", "colour_grade", "vignette", "grain", "unsharp",
          "scene_trim", "fade_in_out", "denoise", "loudness", "pitch", "micro_speed",
          "bgm_ducking", "karaoke_subtitles", "watermark", "saturation", "contrast",
          "crop_edges", "audio_fade"]
+CONTROL_VIDEO = "jNQXAC9IVRw"        # "Me at the zoo" — কুকি জীবিত কি না যাচাইয়ের মানদণ্ড
+POT_SCRIPT_CANDIDATES = ["/opt/bgutil/generate_once.js",
+                         str(Path.home() / "bgutil-ytdlp-pot-provider/server/build/generate_once.js")]
+DOWNLOAD_LADDER = [
+    (["web"], True, "কুকি + web"),
+    (["tv"], True, "কুকি + tv"),
+    (["web_safari", "web"], True, "কুকি + web_safari"),
+    (["tv_embedded", "android", "ios"], False, "কুকি ছাড়া"),
+]
+REASON_BN = {
+    "cookie": "কুকি মৃত — ইউটিউব সেশন বাতিল করেছে",
+    "bot": "ইউটিউব বট-চেক — ডেটাসেন্টার আইপি থেকে কুকি ছাড়া সম্ভব নয়",
+    "gone": "ভিডিওটি আর নেই (ডিলিট/প্রাইভেট)",
+    "members": "মেম্বার-অনলি বা প্রিমিয়ার",
+    "extractor": "yt-dlp এক্সট্রাক্টর সমস্যা — আপগ্রেড দরকার",
+    "other": "অজানা কারণ",
+}
+_COOKIE_CACHE = None
 
 
+# --------------------------------------------------------------- basic helpers
 def run(args, timeout=7200, cwd=None):
     p = subprocess.run(args, capture_output=True, text=True, timeout=timeout, cwd=cwd)
     if p.returncode != 0:
@@ -51,12 +76,10 @@ def probe(path) -> dict:
 
 
 def cookie_text(raw: str) -> str:
-    """ইউজারের YT_COOKIES সিকারেট পরিষ্কার করে সঠিক Netscape ফাইল বানায়।
+    """YT_COOKIES সিকারেট পরিষ্কার করে সঠিক Netscape ফাইল বানায়।
 
-    আসল ভুল: সিকারেটের প্রথম লাইন ছিল 'Netscape HTTP Cookie File' — কিন্তু python-এর
-    cookiejar '# Netscape HTTP Cookie File' (হ্যাশ সহ) চায়, নাহলে "does not look like
-    a Netscape format cookies file" এরর দিয়ে কুকি লোড হয় না → ইউটিউব "Sign in to
-    confirm you're not a bot" দেখায়।
+    python-এর cookiejar '# Netscape HTTP Cookie File' (হ্যাশ সহ) চায়; নাহলে
+    "does not look like a Netscape format cookies file" এরর দিয়ে কুকি লোডই হয় না।
     """
     rows = [ln for ln in str(raw or "").splitlines()
             if len(ln.split("\t")) == 7 and ln.split("\t")[0].strip()]
@@ -69,25 +92,23 @@ def write_cookies(raw: str, dest: Path) -> Path:
     return dest
 
 
-def font_file() -> str | None:
+def font_file():
     for path in FONT_CANDIDATES:
         if os.path.exists(path):
             return path
     return None
 
 
-# ------------------------------------------------------- channel sanitizing
+# ------------------------------------------------------------- channel sanitize
 def norm_channel_url(raw) -> str:
-    """যেকোনো রকম লেখা থেকে সঠিক চ্যানেল লিংক বানায়; ভুল/খালি হলে '' ফেরত দেয়।
+    """যেকোনো লেখা থেকে সঠিক চ্যানেল লিংক; ভুল/খালি হলে ''।
 
-    @crimealert            -> https://youtube.com/@crimealert
-    crimealert             -> https://youtube.com/@crimealert
-    youtube.com/@x/        -> https://youtube.com/@x
-    UCxxxxxxxxxxxxxxxxxxxx -> https://youtube.com/channel/UCxxxx...
-    https://youtube.com/@   -> ''   (এই খালি হ্যান্ডেলটাই আগের বাগ ছিল)
+    @crimealert / crimealert / youtube.com/@crimealert/ -> https://youtube.com/@crimealert
+    UCxxxxxxxxxxxxxxxxxxxx -> https://youtube.com/channel/UC...
+    https://youtube.com/@   -> ''   (এই খালি হ্যান্ডেলটাই পুরোনো বাগ ছিল)
     """
     s = str(raw or "").strip().replace("\u200b", "")
-    s = re.sub(r"^[•\*\-\s]+", "", s).strip()
+    s = re.sub(r"^[•*\- ]+", "", s).strip()
     if not s:
         return ""
     if s.startswith("@"):
@@ -96,8 +117,7 @@ def norm_channel_url(raw) -> str:
     if re.match(r"^(https?://)?(www\.)?(m\.)?youtube\.com/", s, re.I) or \
        re.match(r"^(https?://)?youtu\.be/", s, re.I):
         u = s if s.lower().startswith("http") else "https://" + s
-        u = re.sub(r"^http://", "https://", u, flags=re.I)
-        u = u.split("?")[0].rstrip("/")
+        u = re.sub(r"^http://", "https://", u, flags=re.I).split("?")[0].rstrip("/")
         u = re.sub(r"^https://(www\.|m\.)?youtube\.com", "https://youtube.com", u, flags=re.I)
         rest = u.split("youtube.com/", 1)[-1] if "youtube.com/" in u else u
         if not rest or rest in ("@", "c", "channel", "user"):
@@ -113,7 +133,7 @@ def norm_channel_url(raw) -> str:
 
 
 def clean_channels(cfg: dict, platform: str) -> list:
-    """config থেকে বৈধ চ্যানেলের তালিকা (ক্রম ঠিক রেখে, ডুপ্লিকেট ও খালি বাদ)।"""
+    """config থেকে বৈধ চ্যানেল (ক্রম ঠিক রেখে, ডুপ্লিকেট ও খালি বাদ)।"""
     out = []
     for raw in (cfg.get(f"{platform}_channels") or []):
         c = norm_channel_url(raw)
@@ -123,18 +143,17 @@ def clean_channels(cfg: dict, platform: str) -> list:
 
 
 def channel_for_slot(cfg: dict, platform: str, slot: int) -> str:
-    """প্রতিটি স্লটের নিজের চ্যানেল: স্লট ০ → প্রথম, স্লট ১ → দ্বিতীয়, ..."""
+    """স্লট ০ → প্রথম চ্যানেল, স্লট ১ → দ্বিতীয়, ..."""
     chans = clean_channels(cfg, platform)
     if not chans:
-        raise SskError(f"{platform}-এর কোনো বৈধ চ্যানেল সেট করা নেই "
-                       "(ড্যাশবোর্ডের চ্যানেল কার্ডে স্লটগুলো ভরো)")
+        raise SskError(f"{platform}-এর কোনো বৈধ চ্যানেল সেট করা নেই (ড্যাশবোর্ডের "
+                       "চ্যানেল কার্ডে স্লটগুলো ভরো)")
     return chans[slot % len(chans)]
 
 
-# ------------------------------------------------------------------ yt-dlp
-# --------------------------------------------------------------- yt-dlp নিরাপদ ইমপোর্ট
+# -------------------------------------------------------------------- yt-dlp
 def ensure_ytdlp():
-    """yt-dlp ইনস্টল না থাকলে নিজে ইনস্টল করে ইমপোর্ট করে দেয় (Actions-এ মডিউল মিসিং এরর বন্ধ)।"""
+    """yt-dlp না থাকলে নিজে ইনস্টল করে দেয় (Actions-এ 'No module named yt_dlp' বন্ধ)।"""
     try:
         import yt_dlp
         return yt_dlp
@@ -142,8 +161,8 @@ def ensure_ytdlp():
         pass
     for extra in ([], ["--user"]):
         try:
-            subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--upgrade", "yt-dlp"] + extra,
-                           capture_output=True, text=True, timeout=900)
+            subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--upgrade",
+                            "yt-dlp"] + extra, capture_output=True, text=True, timeout=900)
         except Exception:
             continue
         try:
@@ -156,7 +175,32 @@ def ensure_ytdlp():
     raise SskError("yt-dlp ইনস্টল করা গেল না — workflow-এর pip ধাপ দেখো")
 
 
-# ---------------------------------------------------------- YouTube Data API (fallback)
+def pot_script():
+    """bgutil PO-টোকেন স্ক্রিপ্ট থাকলে পথ দেয়, নাহলে None (না থাকলেও চলে)।"""
+    for p in POT_SCRIPT_CANDIDATES:
+        if os.path.exists(p):
+            return p
+    return None
+
+
+def classify_error(msg: str) -> str:
+    """এরর থেকে আসল কারণ — কুকি মৃত / বট-চেক / ভিডিও নেই / মেম্বার / এক্সট্রাক্টর।"""
+    m = str(msg or "")
+    if ("needs to be reloaded" in m or "Requested format is not available" in m
+            or "content isn't available" in m or "unable to extract" in m.lower()):
+        return "cookie"
+    if "not a bot" in m or "Sign in to confirm" in m:
+        return "bot"
+    if "Video unavailable" in m or "Private video" in m or "has been removed" in m:
+        return "gone"
+    if "members-only" in m or "Premieres in" in m:
+        return "members"
+    if "nsig" in m or "Only images are available" in m:
+        return "extractor"
+    return "other"
+
+
+# ------------------------------------------------------- YouTube Data API (scan)
 YT_API = "https://www.googleapis.com/youtube/v3"
 
 
@@ -195,7 +239,7 @@ def stamp_epoch(text):
 
 
 def handle_of(url):
-    """channel লিংক থেকে (kind, value) — kind: id | handle | search"""
+    """(kind, value) — kind: id | handle | search"""
     u = str(url or "").strip().rstrip("/")
     if "/channel/" in u:
         return "id", u.split("/channel/")[-1].split("/")[0]
@@ -209,7 +253,7 @@ def handle_of(url):
 
 
 def api_channel_entries(url, limit: int = 15) -> list:
-    """YouTube Data API দিয়ে চ্যানেলের সর্বশেষ ভিডিও (duration + তারিখ সহ) — কুকি লাগে না।"""
+    """YouTube Data API দিয়ে চ্যানেলের ভিডিও (duration + তারিখ সহ) — কুকি লাগে না।"""
     kind, value = handle_of(url)
     info = {}
     if kind == "id":
@@ -225,8 +269,7 @@ def api_channel_entries(url, limit: int = 15) -> list:
             info = _api("channels", {"part": "contentDetails,snippet", "id": cid}) if cid else {}
     if not info.get("items"):
         return []
-    item = info["items"][0]
-    uploads = ((item.get("contentDetails") or {}).get("relatedPlaylists") or {}).get("uploads")
+    uploads = (((info["items"][0].get("contentDetails") or {}).get("relatedPlaylists")) or {}).get("uploads")
     if not uploads:
         return []
     want = max(1, min(400, int(limit)))
@@ -263,10 +306,10 @@ def api_channel_entries(url, limit: int = 15) -> list:
 
 
 def scan_channel(url: str, limit: int = 15, cookies: str = "", deep: int = 0) -> list:
-    """চ্যানেলের ভিডিও তালিকা — প্রথমে YouTube Data API (দ্রুত, কুকি লাগে না), না পেলে yt-dlp।
+    """তালিকা — প্রথমে YouTube Data API (কুকি লাগে না), না পেলে yt-dlp।
 
-    আগে উল্টো ছিল: yt-dlp আগে চেষ্টা করত, আর ক্রেডেনশিয়াল পুরোনো হলে প্রতিটি চ্যানেলে
-    মিনিটের পর মিনিট আটকে থাকত — এই দীর্ঘ অপেক্ষাই "preparing" হয়ে ঘণ্টা পার করে দিত।
+    আগে উল্টো ছিল; কুকি/ক্রেডেনশিয়াল পুরোনো হলে প্রতিটি চ্যানেলে মিনিটের পর মিনিট
+    আটকে থাকত — সেটাই "preparing" হয়ে ঘণ্টা পার করিয়ে দিত।
     """
     target = str(url).split("?")[0].rstrip("/")
     if not target.endswith("/videos"):
@@ -281,9 +324,9 @@ def scan_channel(url: str, limit: int = 15, cookies: str = "", deep: int = 0) ->
     if not entries:
         try:
             yt_dlp = ensure_ytdlp()
-            opts = {"quiet": True, "no_warnings": True, "skip_download": True, "extract_flat": False,
-                    "ignoreerrors": True, "playlistend": int(limit), "socket_timeout": 20,
-                    "extractor_args": {"youtube": {"player_client": ["default", "web"]}}}
+            opts = {"quiet": True, "no_warnings": True, "skip_download": True, "ignoreerrors": True,
+                    "extract_flat": False, "playlistend": int(limit), "socket_timeout": 25,
+                    "extractor_args": {"youtube": {"player_client": ["web", "tv"]}}}
             if cookies:
                 opts["cookiefile"] = str(write_cookies(cookies, Path(core.WORK) / "cookies.txt"))
             with yt_dlp.YoutubeDL(opts) as ydl:
@@ -296,24 +339,23 @@ def scan_channel(url: str, limit: int = 15, cookies: str = "", deep: int = 0) ->
 
 
 def pick_source(cfg: dict, platform: str, slot: int) -> dict:
+    """ফিল্টার মেনে (বয়স ≥ day_filter, ৬০s–৮০মিনিট) সেরা সোর্স বেছে দেয়।"""
     channels = clean_channels(cfg, platform)
     if not channels:
         raise SskError(f"{platform}-এর চ্যানেল সেট করা নেই")
     own = channel_for_slot(cfg, platform, slot)
     order = [own] + [c for c in channels if c != own]
-    # ✅ আগের বাগ: এখানে history_sources(...) লেখা ছিল, কিন্তু সেটি core-এর ভেতরে —
-    # তাই "name 'history_sources' is not defined" এররে ৬টি কাজই ব্যর্থ হচ্ছিল।
     used = core.history_sources(platform) | {j.get("source_id") for j in core.jobs().values()
                                              if j.get("platform") == platform}
     day = 0 if cfg.get("allow_any_age") else int(cfg.get("day_filter", 60))
     cap = float(cfg.get("max_duration_minutes", 80)) * 60
     floor = float(cfg.get("min_duration_seconds", 60))
-    cookies = env("YT_COOKIES")
-    notes, why, picks = [], {"young": 0, "long": 0, "short": 0, "nometa": 0, "used": 0}, []
+    notes, picks = [], []
+    why = {"young": 0, "long": 0, "short": 0, "nometa": 0, "used": 0}
     for channel in order:
         try:
-            entries = scan_channel(channel, int(cfg.get("metadata_probe_limit", 15)), cookies,
-                                  deep=int(cfg.get("api_scan_limit", 300)))
+            entries = scan_channel(channel, int(cfg.get("metadata_probe_limit", 15)),
+                                  env("YT_COOKIES"), deep=int(cfg.get("api_scan_limit", 300)))
         except Exception as exc:
             notes.append(f"{channel}: {clean(exc, 120)}")
             continue
@@ -356,28 +398,82 @@ def pick_source(cfg: dict, platform: str, slot: int) -> dict:
     return picks[0]
 
 
-def download_source(source: dict, folder: Path, cfg: dict) -> Path:
-    """ডাউনলোড — তিন ধাপের ক্লায়েন্ট লেডার।
+# ------------------------------------------------------ কুকি যাচাই ও yt-dlp অপশন
+def _common_opts(fmt: str = "bv*[height<=1080]+ba/b[height<=1080]/bv*+ba/b") -> dict:
+    opts = {"quiet": True, "no_warnings": True, "socket_timeout": 30, "format": fmt,
+            "merge_output_format": "mp4", "noplaylist": True, "retries": 2,
+            "fragment_retries": 2, "concurrent_fragment_downloads": 4}
+    proxy = env("YT_PROXY")
+    if proxy:
+        opts["proxy"] = proxy
+    pot = pot_script()
+    if pot:
+        opts["extractor_args"] = {"youtubepot-bgutilscript": {"script_path": [pot]}}
+    return opts
 
-    "The page needs to be reloaded." মানে ইউটিউব ওই ক্লায়েন্ট-কুকি জোড়া ফিরিয়ে দিচ্ছে।
-    আগে এক জোড়া দিয়েই retries=5 করে ঘণ্টার পর ঘণ্টা নষ্ট হত; এখন ব্যর্থ হলে দ্রুত
-    পরের ক্লায়েন্টে যায়, শেষ ধাপে কুকি ছাড়াই চেষ্টা করে।
+
+def _with_clients(opts: dict, clients) -> dict:
+    args = {k: dict(v) for k, v in (opts.get("extractor_args") or {}).items()}
+    args.setdefault("youtube", {})["player_client"] = list(clients)
+    out = dict(opts)
+    out["extractor_args"] = args
+    return out
+
+
+def cookie_state(force: bool = False) -> dict:
+    """কুকি জীবিত কি না — কন্ট্রোল ভিডিও দিয়ে যাচাই (ফল ক্যাশ থাকে)।
+
+    কেন দরকার: কুকি মরে গেলে ইউটিউব ভিডিও নিখুঁত থাকলেও ইংরেজি এরর দেয়, আর তখন
+    "ভিডিও লিংক খারাপ" ভেবে ঘণ্টার পর ঘণ্টা নষ্ট হয়।
     """
+    global _COOKIE_CACHE
+    if _COOKIE_CACHE and not force:
+        return _COOKIE_CACHE
+    raw = env("YT_COOKIES")
+    if not raw:
+        _COOKIE_CACHE = {"alive": False, "reason": "cookie", "client": "", "tries": [],
+                         "note": "কুকি নেই ❌ — YT_COOKIES সিকারেট সেট করা নেই"}
+        return _COOKIE_CACHE
+    cfile = str(write_cookies(raw, Path(core.WORK) / "cookies.txt"))
+    yt_dlp = ensure_ytdlp()
+    tries = []
+    for clients, use_cookie, label in DOWNLOAD_LADDER[:3]:
+        opts = _with_clients(_common_opts(), clients)
+        opts.update({"skip_download": True, "playlistend": 1})
+        if use_cookie:
+            opts["cookiefile"] = cfile
+        try:
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info("https://www.youtube.com/watch?v=" + CONTROL_VIDEO,
+                                        download=False)
+            if info and info.get("title"):
+                _COOKIE_CACHE = {"alive": True, "reason": "ok", "client": ",".join(clients),
+                                 "tries": tries,
+                                 "note": "কুকি জীবিত ✅ (ক্লায়েন্ট " + ",".join(clients) + ")"}
+                return _COOKIE_CACHE
+            tries.append(label + ": খালি উত্তর")
+        except Exception as exc:
+            tries.append(label + ": " + clean(exc, 200))
+    _COOKIE_CACHE = {"alive": False, "reason": "cookie", "client": "", "tries": tries,
+                     "note": "কুকি মৃত ❌ — YT_COOKIES নতুন করে বসাতে হবে"}
+    return _COOKIE_CACHE
+
+
+def download_source(source: dict, folder: Path, cfg: dict) -> Path:
+    """ডাউনলোড — আগে কুকি যাচাই, তারপর ৪ ধাপের ক্লায়েন্ট লেডার; শেষ ধাপে কুকি ছাড়াই চেষ্টা।"""
     yt_dlp = ensure_ytdlp()
     folder.mkdir(parents=True, exist_ok=True)
     cookies = env("YT_COOKIES")
     cookie_file = str(write_cookies(cookies, folder / "cookies.txt")) if cookies else None
-    ladders = [["default", "web"], ["web", "mweb"], ["tv_embedded", "android", "ios"]]
-    errors = []
-    for i, clients in enumerate(ladders):
-        target = folder / f"try-{i}"
+    state = cookie_state()
+    core.log("কুকি যাচাই: " + state["note"], "" if state["alive"] else "warn")
+    errors, kinds = [], []
+    for i, (clients, use_cookie, label) in enumerate(DOWNLOAD_LADDER):
+        target = folder / ("try-" + str(i))
         target.mkdir(parents=True, exist_ok=True)
-        opts = {"quiet": True, "no_warnings": True, "ignoreerrors": False, "socket_timeout": 30,
-                "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
-                "merge_output_format": "mp4", "outtmpl": str(target / "source.%(ext)s"),
-                "retries": 2, "fragment_retries": 2, "concurrent_fragment_downloads": 4,
-                "extractor_args": {"youtube": {"player_client": clients}}}
-        if cookie_file and i < 2:          # শেষ ধাপে কুকি ছাড়াই চেষ্টা
+        opts = _with_clients(_common_opts(), clients)
+        opts.update({"ignoreerrors": False, "outtmpl": str(target / "source.%(ext)s")})
+        if cookie_file and use_cookie:
             opts["cookiefile"] = cookie_file
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
@@ -392,18 +488,28 @@ def download_source(source: dict, folder: Path, cfg: dict) -> Path:
             final = folder / "source.mp4"
             if path.resolve() != final.resolve():
                 shutil.copy2(path, final)
-            core.log(f"ডাউনলোড ঠিক হয়েছে (ক্লায়েন্ট {','.join(clients)})")
+            core.log("ডাউনলোড ঠিক হয়েছে (" + label + ")")
             return final
         except Exception as exc:
             msg = clean(exc, 200)
-            errors.append(f"{','.join(clients)}: {msg}")
-            core.log(f"ডাউনলোড চেষ্টা {i + 1}/3 ব্যর্থ ({','.join(clients)}): {msg}", "warn")
-    raise SskError("ডাউনলোড কোনো ক্লায়েন্টেই হয়নি — YT_COOKIES নতুন করে নাও: " + " | ".join(errors[:3]))
+            kind = classify_error(msg)
+            kinds.append(kind)
+            errors.append(label + ": " + msg)
+            core.log("ডাউনলোড চেষ্টা " + str(i + 1) + "/" + str(len(DOWNLOAD_LADDER)) +
+                     " ব্যর্থ (" + label + ") — " + REASON_BN[kind] + ": " + msg, "warn")
+    if "cookie" in kinds or not state["alive"]:
+        raise SskError(
+            "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। "
+            "সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি "
+            "নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → "
+            "YT_COOKIES পুরোটা বদলে বসাও। | " + " | ".join(errors[:3]))
+    raise SskError("ডাউনলোড কোনো ক্লায়েন্টেই হয়নি (" +
+                   ", ".join(sorted({REASON_BN[k] for k in kinds})) + "): " + " | ".join(errors[:3]))
 
 
-# ------------------------------------------------------------------ editing
+# ------------------------------------------------------------------- editing
 def scene_cuts(path: Path, threshold: float = 0.25) -> list:
-    """দৃশ্য পরিবর্তনের সময়গুলো বের করে (showinfo সরাসরি stderr-এ দেয় — সবচেয়ে নির্ভরযোগ্য)।"""
+    """দৃশ্য পরিবর্তনের সময় (ffmpeg showinfo সরাসরি stderr-এ দেয় — নির্ভরযোগ্য)।"""
     p = subprocess.run([FFMPEG, "-v", "info", "-i", str(path), "-an",
                         "-filter:v", f"select='gt(scene,{threshold})',showinfo",
                         "-f", "null", "-"], capture_output=True, text=True, timeout=5400)
@@ -417,6 +523,7 @@ def scene_cuts(path: Path, threshold: float = 0.25) -> list:
 
 
 def choose_keeps(duration: float, cuts: list, keep_ratio: float, min_piece: float = 8.0) -> list:
+    """মোট দৈর্ঘ্যের (1 − keep_ratio) অংশ বাদ দেয়; দৃশ্য-কাট না পেলে সমান ভাগে কাটে।"""
     target = max(0.0, duration * (1.0 - keep_ratio))
     edges = [0.0] + [c for c in cuts if min_piece < c < duration - min_piece] + [duration]
     pieces = [(edges[i], edges[i + 1]) for i in range(len(edges) - 1)
@@ -427,7 +534,7 @@ def choose_keeps(duration: float, cuts: list, keep_ratio: float, min_piece: floa
         n = max(8, int(round(duration / 45)) * 2)
         step = duration / n
         pieces = [(i * step, (i + 1) * step) for i in range(n)]
-        core.log(f"scene cut কম পাওয়া গেছে ({len(cuts)}টি) — সমান {n} ভাগে কাটা হচ্ছে", "warn")
+        core.log(f"scene cut কম ({len(cuts)}টি) — সমান {n} ভাগে কাটা হচ্ছে", "warn")
     removed, acc = set(), 0.0
     for i in sorted(range(1, len(pieces) - 1), key=lambda k: -(pieces[k][1] - pieces[k][0])):
         if acc >= target:
@@ -447,8 +554,7 @@ def trim_video(path: Path, keeps: list, folder: Path) -> Path:
              "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
              "-c:a", "aac", "-b:a", "160k", "-avoid_negative_ts", "make_zero", str(part)], timeout=5400)
         parts.append(part)
-    lst = folder / "concat.txt"
-    lst.write_text("".join(f"file '{p.name}'\n" for p in parts), encoding="utf-8")
+    (folder / "concat.txt").write_text("".join(f"file '{p.name}'\n" for p in parts), encoding="utf-8")
     joined = folder / "joined.mp4"
     run([FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", "concat.txt", "-c", "copy", "joined.mp4"],
         cwd=str(folder))
@@ -475,6 +581,7 @@ def cap_length(path: Path, limit_seconds: float) -> Path:
 
 
 def transcribe(audio: Path, model_name: str, out_json: Path) -> list:
+    """Whisper দিয়ে শব্দ-টাইমিং সহ ট্রান্সক্রিপ্ট (ফাইল থাকলে ক্যাশ থেকে)।"""
     if out_json.exists():
         return json.loads(out_json.read_text(encoding="utf-8")).get("words", [])
     import whisper
@@ -486,7 +593,7 @@ def transcribe(audio: Path, model_name: str, out_json: Path) -> list:
     return words
 
 
-# ------------------------------------------------------------------ subtitles
+# ----------------------------------------------------------------- subtitles
 PALETTE = ["&H0000E5FF&", "&H0059FF59&", "&H00FFD659&", "&H00FF5FD6&", "&H00FFFFFF&",
            "&H00B0B0FF&", "&H00FF9A3C&"]
 
@@ -499,6 +606,7 @@ def ass_time(t: float) -> str:
 
 
 def write_ass(words: list, out: Path, width: int, height: int) -> int:
+    """রঙিন karaoke সাবটাইটেল (\\kf + ঘুরতে থাকা প্যালেট রং)।"""
     size = 46 if height >= width else 42
     margin = 64 if height >= width else 135
     header = f"""[Script Info]
@@ -539,9 +647,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return len(groups)
 
 
-# ------------------------------------------------------------------- render
+# -------------------------------------------------------------------- render
 def render(joined: Path, out: Path, platform: str, cfg: dict, words: list,
-           music: Path | None = None) -> dict:
+           music=None) -> dict:
     """পূর্ণ ২০টি এডিট + সাবটাইটেল; কোনো ধাপ ফেল করলে সেটি বাদ দিয়ে সরল ভার্সনে রেন্ডার।"""
     info = probe(joined)
     if not info["has_audio"]:
@@ -585,7 +693,7 @@ def render(joined: Path, out: Path, platform: str, cfg: dict, words: list,
         ("pitch", f"asetrate={int(48000 * pitch)}"),
         ("audio_fade", f"afade=t=in:d=1,afade=t=out:st={max(0.0, duration - 1):.2f}:d=1"),
     ]
-    has_music = bool(music and music.exists())
+    has_music = bool(music and Path(music).exists())
     attempts = [
         ("full", video_edits, audio_edits, has_music),
         ("no_watermark", [e for e in video_edits if e[0] != "watermark"], audio_edits, has_music),
@@ -604,7 +712,7 @@ def render(joined: Path, out: Path, platform: str, cfg: dict, words: list,
         args = [FFMPEG, "-y", "-i", joined.name]
         filters = [chain, afilters]
         if use_music:
-            args += ["-i", music.name]
+            args += ["-i", Path(music).name]
             filters.append("[1:a]volume=0.12,aloop=loop=-1:size=2e9[m];"
                            "[a][m]amix=inputs=2:duration=first:dropout_transition=3[mix]")
             mapv, mapa = "[v]", "[mix]"
@@ -623,7 +731,7 @@ def render(joined: Path, out: Path, platform: str, cfg: dict, words: list,
             applied = (["aspect_fit", "scene_trim"] + [n for n, _ in vedits] +
                        [n for n, _ in aedits] + (["bgm_ducking"] if use_music else []))
             if label != "full":
-                core.log(f"পূর্ণ এডিট চেইন ফেল করেছিল ({last_error[:120]}) — '{label}' ভার্সনে রেন্ডার হয়েছে", "warn")
+                core.log(f"পূর্ণ চেইন ফেল করেছিল ({last_error[:120]}) — '{label}' ভার্সনে রেন্ডার", "warn")
             return {"platform": platform, "width": result["width"], "height": result["height"],
                     "duration": round(result["duration"], 2), "size_bytes": result["size"],
                     "subtitles": len(words), "edits": applied, "variant": label,
@@ -634,7 +742,8 @@ def render(joined: Path, out: Path, platform: str, cfg: dict, words: list,
     raise SskError("রেন্ডার কোনো ভার্সনেই সফল হয়নি: " + last_error)
 
 
-def freesound_music(cfg: dict, folder: Path) -> Path | None:
+def freesound_music(cfg: dict, folder: Path):
+    """Freesound থেকে CC0 (কপিরাইট-মুক্ত) মিউজিক আনে।"""
     key = env("FREESOUND_API_KEY")
     if not key or not cfg.get("music_enabled"):
         return None
@@ -647,8 +756,7 @@ def freesound_music(cfg: dict, folder: Path) -> Path | None:
         if not results:
             core.log("Freesound-এ CC0 মিউজিক পাওয়া যায়নি", "warn")
             return None
-        track = results[0]
-        url = (track.get("previews") or {}).get("preview-hq-mp3")
+        url = (results[0].get("previews") or {}).get("preview-hq-mp3")
         if not url:
             return None
         out = folder / "music.mp3"
@@ -657,3 +765,24 @@ def freesound_music(cfg: dict, folder: Path) -> Path | None:
     except Exception as exc:
         core.log("মিউজিক আনা যায়নি: " + clean(exc), "warn")
         return None
+
+
+# ----------------------------------------------------------------------- CLI
+def cookie_report() -> dict:
+    st = cookie_state(force=True)
+    return {"অবস্থা": st["note"], "কারণ": REASON_BN.get(st["reason"], st["reason"]),
+            "ক্লায়েন্ট": st.get("client", ""), "চেষ্টা": st.get("tries", []),
+            "সমাধান": "লগইন করা ব্রাউজার থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে "
+                      "GitHub → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও।"}
+
+
+def _cli() -> int:
+    if "--cookies" in sys.argv:
+        print(json.dumps(cookie_report(), ensure_ascii=False, indent=2), flush=True)
+        return 0
+    print("ব্যবহার: python media.py --cookies   (কুকি জীবিত কি না দেখায়)")
+    return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(_cli())
