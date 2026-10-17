@@ -434,6 +434,11 @@
       "at": "2026-10-18T03:20:52+06:00",
       "level": "error",
       "text": "2026-10-18-facebook-1: ব্যর্থ — ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] UzJwuSSrofw: Requested format is not available. Use --list-formats for a list of avail"
+    },
+    {
+      "at": "2026-10-18T03:20:55+06:00",
+      "level": "info",
+      "text": "এই রানে 1টি স্লট হবে, বাকিটা পরের রানে (৩৫০ মিনিটের সীমা বাঁচাতে)"
     }
   ]
 }
