@@ -479,6 +479,11 @@
       "at": "2026-10-18T05:52:06+06:00",
       "level": "warn",
       "text": "ডাউনলোড চেষ্টা 2/4 ব্যর্থ (কুকি + tv) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] 34dpNKa-AoQ: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-18T05:52:11+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 3/4 ব্যর্থ (কুকি + web_safari) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] 34dpNKa-AoQ: Requested format is not available. Use --list-formats for a list of available formats"
     }
   ]
 }
