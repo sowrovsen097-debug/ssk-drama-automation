@@ -119,13 +119,13 @@
   },
   "2026-10-19-facebook-1": {
     "key": "2026-10-19-facebook-1",
-    "state": "failed",
+    "state": "preparing",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-19",
     "time": "10:00",
-    "started_at": "2026-10-19T03:20:22+06:00",
-    "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] 078-VnUQOFk: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
+    "started_at": "2026-10-19T05:59:37+06:00",
+    "error": null,
     "edits": [
       "aspect_fit",
       "mirror",
@@ -148,7 +148,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-19T03:21:03+06:00",
+    "updated_at": "2026-10-19T05:59:37+06:00",
     "source_id": "078-VnUQOFk",
     "source_url": "https://www.youtube.com/watch?v=078-VnUQOFk",
     "source_title": "सुहागरात से पहले खुला खौफनाक राज़, | Crime Alert 4K | Full Episode | Dangal 2",
