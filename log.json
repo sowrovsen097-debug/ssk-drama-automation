@@ -679,6 +679,11 @@
       "at": "2026-10-21T04:10:49+06:00",
       "level": "warn",
       "text": "2026-10-21-facebook-1: 10:00 — মাত্র 5.8 ঘণ্টা বাকি; সর্বনিম্ন 6 ঘণ্টা আগে ঠিক করতে হবে"
+    },
+    {
+      "at": "2026-10-21T04:10:56+06:00",
+      "level": "info",
+      "text": "YouTube API দিয়ে তালিকা (https://youtube.com/@admdindiancriminalminds-z6t/videos) — 300টি"
     }
   ]
 }
