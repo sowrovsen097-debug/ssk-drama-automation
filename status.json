@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-22T04:13:34+06:00",
+  "updated_at": "2026-10-22T04:13:38+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
@@ -283,7 +283,7 @@
   },
   "progress": {
     "stage": "রাতের এডিটিং শেষ",
-    "updated_at": "2026-10-21T04:11:35+06:00"
+    "updated_at": "2026-10-22T04:13:37+06:00"
   },
   "drive": {
     "error": "Drive টোকেন পাওয়া গেল না: {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'}"
