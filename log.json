@@ -824,6 +824,11 @@
       "at": "2026-10-23T04:12:08+06:00",
       "level": "warn",
       "text": "কুকি যাচাই: কুকি মৃত ❌ — YT_COOKIES নতুন করে বসাতে হবে"
+    },
+    {
+      "at": "2026-10-23T04:12:11+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 1/4 ব্যর্থ (কুকি + web) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] PDd5BbhWNbg: Requested format is not available. Use --list-formats for a list of available formats"
     }
   ]
 }
