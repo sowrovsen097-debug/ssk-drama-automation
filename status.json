@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-26T01:57:54+06:00",
+  "updated_at": "2026-10-26T03:33:23+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
-    "failed": 9
+    "failed": 10
   },
   "jobs": {
     "2026-10-16-facebook-1": {
@@ -396,6 +396,45 @@
       "source_channel": "https://youtube.com/@crimealert_4k",
       "source_age_days": 60.2,
       "source_duration": 2697.0
+    },
+    "2026-10-26-facebook-1": {
+      "key": "2026-10-26-facebook-1",
+      "state": "failed",
+      "platform": "facebook",
+      "slot": 0,
+      "date": "2026-10-26",
+      "time": "10:00",
+      "started_at": "2026-10-26T03:32:36+06:00",
+      "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] AtV8hCq3qAY: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-10-26T03:33:18+06:00",
+      "source_id": "AtV8hCq3qAY",
+      "source_url": "https://www.youtube.com/watch?v=AtV8hCq3qAY",
+      "source_title": "Ek Kahani | ASTIN KA SAAP | Episode 185 | Hindi Show | Crime Alert #dangaltvshow #crime",
+      "source_channel": "https://youtube.com/@crimealert",
+      "source_age_days": 60.3,
+      "source_duration": 2705.0
     }
   },
   "progress": {
