@@ -428,5 +428,38 @@
     "source_channel": "https://youtube.com/@crimealert_4k",
     "source_age_days": 60.4,
     "source_duration": 2680.0
+  },
+  "2026-10-27-facebook-1": {
+    "key": "2026-10-27-facebook-1",
+    "state": "preparing",
+    "platform": "facebook",
+    "slot": 0,
+    "date": "2026-10-27",
+    "time": "10:00",
+    "started_at": "2026-10-27T05:04:29+06:00",
+    "error": null,
+    "edits": [
+      "aspect_fit",
+      "mirror",
+      "colour_grade",
+      "vignette",
+      "grain",
+      "unsharp",
+      "zoom_punch",
+      "scene_trim",
+      "fade_in_out",
+      "denoise",
+      "loudness",
+      "pitch",
+      "micro_speed",
+      "bgm_ducking",
+      "karaoke_subtitles",
+      "watermark",
+      "saturation",
+      "contrast",
+      "crop_edges",
+      "audio_fade"
+    ],
+    "updated_at": "2026-10-27T05:04:30+06:00"
   }
 }
