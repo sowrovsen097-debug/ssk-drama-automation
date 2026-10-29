@@ -1299,6 +1299,11 @@
       "at": "2026-10-30T05:10:03+06:00",
       "level": "warn",
       "text": "ডাউনলোড চেষ্টা 2/4 ব্যর্থ (কুকি + tv) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] EyIh6w_-CQY: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-10-30T05:10:09+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 3/4 ব্যর্থ (কুকি + web_safari) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] EyIh6w_-CQY: Requested format is not available. Use --list-formats for a list of available formats"
     }
   ]
 }
