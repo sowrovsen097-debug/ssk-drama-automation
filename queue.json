@@ -587,13 +587,13 @@
   },
   "2026-10-31-facebook-1": {
     "key": "2026-10-31-facebook-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-10-31",
     "time": "10:00",
     "started_at": "2026-10-31T04:51:22+06:00",
-    "error": null,
+    "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] 143ojUsE3XY: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -616,7 +616,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-10-31T04:51:40+06:00",
+    "updated_at": "2026-10-31T04:52:05+06:00",
     "source_id": "143ojUsE3XY",
     "source_url": "https://www.youtube.com/watch?v=143ojUsE3XY",
     "source_title": "Ek Kahani | EK HASEENA TEEN DEEWANE | Episode 204 | Hindi Show | Crime Alert #dangaltvshow #crime",
