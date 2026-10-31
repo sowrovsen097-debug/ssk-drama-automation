@@ -626,13 +626,13 @@
   },
   "2026-11-01-facebook-1": {
     "key": "2026-11-01-facebook-1",
-    "state": "preparing",
+    "state": "failed",
     "platform": "facebook",
     "slot": 0,
     "date": "2026-11-01",
     "time": "10:00",
     "started_at": "2026-11-01T04:17:54+06:00",
-    "error": null,
+    "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] q7TJwL7qr5k: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
     "edits": [
       "aspect_fit",
       "mirror",
@@ -655,7 +655,7 @@
       "crop_edges",
       "audio_fade"
     ],
-    "updated_at": "2026-11-01T04:18:09+06:00",
+    "updated_at": "2026-11-01T04:18:31+06:00",
     "source_id": "q7TJwL7qr5k",
     "source_url": "https://www.youtube.com/watch?v=q7TJwL7qr5k",
     "source_title": "Ek Kahani | BETI LAYE DAHEJ | Episode 197 | Hindi Show | Crime Alert #dangaltvshow #crime",
