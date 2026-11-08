@@ -1714,6 +1714,11 @@
       "at": "2026-11-09T04:43:14+06:00",
       "level": "warn",
       "text": "ডাউনলোড চেষ্টা 1/4 ব্যর্থ (কুকি + web) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] Lg_w7ugNZxc: Requested format is not available. Use --list-formats for a list of available formats"
+    },
+    {
+      "at": "2026-11-09T04:43:17+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 2/4 ব্যর্থ (কুকি + tv) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] Lg_w7ugNZxc: The page needs to be reloaded."
     }
   ]
 }
