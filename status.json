@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-09T04:43:30+06:00",
+  "updated_at": "2026-11-09T04:43:35+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
@@ -868,7 +868,7 @@
   },
   "progress": {
     "stage": "রাতের এডিটিং শেষ",
-    "updated_at": "2026-11-08T04:33:38+06:00"
+    "updated_at": "2026-11-09T04:43:33+06:00"
   },
   "drive": {
     "error": "Drive টোকেন পাওয়া গেল না: {'error': 'invalid_grant', 'error_description': 'Bad Request'}"
