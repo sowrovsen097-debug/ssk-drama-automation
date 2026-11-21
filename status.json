@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-11-22T04:38:27+06:00",
+  "updated_at": "2026-11-22T05:44:59+06:00",
   "paused": false,
   "counts": {
     "pending": 1,
-    "failed": 24
+    "failed": 25
   },
   "jobs": {
     "2026-10-16-facebook-1": {
@@ -981,6 +981,45 @@
       "source_channel": "https://youtube.com/@crimealert_4k",
       "source_age_days": 60.3,
       "source_duration": 2666.0
+    },
+    "2026-11-22-facebook-1": {
+      "key": "2026-11-22-facebook-1",
+      "state": "failed",
+      "platform": "facebook",
+      "slot": 0,
+      "date": "2026-11-22",
+      "time": "10:00",
+      "started_at": "2026-11-22T05:44:14+06:00",
+      "error": "ডাউনলোড হচ্ছে না — কারণ: কুকি মৃত (ইউটিউব সেশন বাতিল করেছে), ভিডিও নয়। সমাধান: যে ব্রাউজারে ইউটিউবে লগইন করা আছে সেখান থেকে youtube.com-এর কুকি নতুন করে এক্সপোর্ট করে GitHub → Settings → Secrets and variables → Actions → YT_COOKIES পুরোটা বদলে বসাও। | কুকি + web: ERROR: [youtube] PP7ie11krHk: Requested format is not available. Use --list-formats for a list of available formats | কুকি + tv: ERROR:",
+      "edits": [
+        "aspect_fit",
+        "mirror",
+        "colour_grade",
+        "vignette",
+        "grain",
+        "unsharp",
+        "zoom_punch",
+        "scene_trim",
+        "fade_in_out",
+        "denoise",
+        "loudness",
+        "pitch",
+        "micro_speed",
+        "bgm_ducking",
+        "karaoke_subtitles",
+        "watermark",
+        "saturation",
+        "contrast",
+        "crop_edges",
+        "audio_fade"
+      ],
+      "updated_at": "2026-11-22T05:44:55+06:00",
+      "source_id": "PP7ie11krHk",
+      "source_url": "https://www.youtube.com/watch?v=PP7ie11krHk",
+      "source_title": "Ek Kahani | AAG LAGE IIS SHAADI KO | Episode 683 | Hindi Show | Crime Alert #dangaltvshow #crime",
+      "source_channel": "https://youtube.com/@crimealert",
+      "source_age_days": 60.4,
+      "source_duration": 2755.0
     }
   },
   "progress": {
