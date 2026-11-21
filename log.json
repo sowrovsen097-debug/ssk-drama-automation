@@ -1959,6 +1959,11 @@
       "at": "2026-11-22T05:44:45+06:00",
       "level": "warn",
       "text": "ডাউনলোড চেষ্টা 2/4 ব্যর্থ (কুকি + tv) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] PP7ie11krHk: The page needs to be reloaded."
+    },
+    {
+      "at": "2026-11-22T05:44:50+06:00",
+      "level": "warn",
+      "text": "ডাউনলোড চেষ্টা 3/4 ব্যর্থ (কুকি + web_safari) — কুকি মৃত — ইউটিউব সেশন বাতিল করেছে: ERROR: [youtube] PP7ie11krHk: Requested format is not available. Use --list-formats for a list of available formats"
     }
   ]
 }
